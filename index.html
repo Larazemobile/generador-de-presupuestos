@@ -308,10 +308,21 @@
   <!-- Recovery banner (populated by JS) -->
   <div id="recoveryBannerSlot" class="no-print"></div>
 
-  <!-- Saved drafts (visible on landing page — only shows when there are drafts) -->
+  <!-- Saved drafts (visible on landing page — only shows when there are drafts or when importing) -->
   <section class="step no-print" id="savedDraftsStep" style="display:none;">
     <h2>&#128193; Mis presupuestos guardados</h2>
-    <div class="hint">Clica <b>Abrir</b> para continuar con uno guardado, o la papelera para borrarlo. Se guardan en este navegador.</div>
+    <div class="hint">Clica <b>Abrir</b> para continuar con uno guardado, o la papelera para borrarlo. Para compartir entre móvil y portátil: <b>exporta</b> los que quieras, manda el archivo por WhatsApp o correo, y en el otro aparato pulsa <b>Importar</b>.</div>
+    <div class="draft-toolbar" id="draftToolbar" style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:10px 0 14px 0;">
+      <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+        <input type="checkbox" id="draftSelectAll"> Seleccionar todo
+      </label>
+      <span id="draftSelectedCount" style="font-size:12px; color:#666;"></span>
+      <span style="flex:1;"></span>
+      <button type="button" class="btn-small" id="btnCopyBaseSelected" disabled>&#128203; Copiar al Excel Base</button>
+      <button type="button" class="btn-small ghost" id="btnExportDrafts" disabled>&#128228; Exportar seleccionados</button>
+      <button type="button" class="btn-small ghost" id="btnImportDrafts">&#128229; Importar</button>
+      <input type="file" id="importDraftsInput" accept=".json,application/json" style="display:none;">
+    </div>
     <div id="draftsListInline"></div>
   </section>
 
@@ -1689,6 +1700,7 @@ function renderDraftsInline() {
   if (!drafts.length) {
     section.style.display = 'none';
     body.innerHTML = '';
+    updateDraftSelectionState();
     return;
   }
   section.style.display = 'block';
@@ -1697,6 +1709,7 @@ function renderDraftsInline() {
     const cliente = (d.client && d.client.cliente) || '(sin cliente)';
     return `
       <div class="draft-row">
+        <input type="checkbox" class="draft-select" data-id="${d.id}" style="margin-right:4px; transform:scale(1.2); cursor:pointer;">
         <div class="draft-info">
           <b>${escapeHtml(d.name)}</b>
           <small>${escapeHtml(cliente)} &middot; ${d.lines.length} líneas &middot; ${total.toFixed(2)} € &middot; ${new Date(d.ts).toLocaleString('es-ES', { dateStyle:'short', timeStyle:'short' })}</small>
@@ -1712,7 +1725,212 @@ function renderDraftsInline() {
     if (!confirm('¿Borrar este borrador?')) return;
     deleteDraft(b.dataset.id);
   }));
+  body.querySelectorAll('.draft-select').forEach(c => c.addEventListener('change', updateDraftSelectionState));
+  updateDraftSelectionState();
 }
+
+// Keep the "select all" checkbox, the selection count and the export
+// button in sync with the individual checkboxes.
+function updateDraftSelectionState() {
+  const boxes = document.querySelectorAll('#draftsListInline .draft-select');
+  const selected = Array.from(boxes).filter(b => b.checked);
+  const selectAll = document.getElementById('draftSelectAll');
+  const countEl = document.getElementById('draftSelectedCount');
+  const btnExp = document.getElementById('btnExportDrafts');
+  if (selectAll) {
+    if (boxes.length === 0) {
+      selectAll.checked = false;
+      selectAll.indeterminate = false;
+    } else if (selected.length === boxes.length) {
+      selectAll.checked = true;
+      selectAll.indeterminate = false;
+    } else if (selected.length === 0) {
+      selectAll.checked = false;
+      selectAll.indeterminate = false;
+    } else {
+      selectAll.checked = false;
+      selectAll.indeterminate = true;
+    }
+  }
+  if (countEl) {
+    countEl.textContent = selected.length
+      ? `${selected.length} seleccionado${selected.length === 1 ? '' : 's'}`
+      : '';
+  }
+  if (btnExp) btnExp.disabled = selected.length === 0;
+  const btnCopy = document.getElementById('btnCopyBaseSelected');
+  if (btnCopy) btnCopy.disabled = selected.length === 0;
+}
+
+// Build the 17-column TSV rows for a single saved draft, using that
+// draft's stored client/date/contact instead of the current form. Same
+// column layout as btnCopyBase so the Excel Base accepts a single big
+// paste made from multiple drafts at once.
+function buildBaseTsvRowsFromDraft(draft) {
+  if (!draft || !Array.isArray(draft.lines)) return [];
+  const client = draft.client || {};
+  const fComercial = 'Antonio Torres'; // commercial is fixed in this tool
+  let fFecha = client.fecha;
+  if (!fFecha) {
+    const t = new Date(draft.ts || Date.now());
+    fFecha = t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
+  }
+  const fCliente = (client.cliente || '').trim();
+  const fContacto = (client.contacto || '').trim();
+  const [yy, mm, dd] = fFecha.split('-');
+  const fechaES = `${dd}/${mm}/${yy}`;
+  const mes = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][parseInt(mm, 10) - 1] || '';
+  const tsvClean = (s) => String(s == null ? '' : s).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+  const esNum = (n) => (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).replace('.', ',');
+  return draft.lines.map((l) => {
+    const gift = !!l.gift;
+    const price = gift ? 0 : (Number(l.pvp) || 0);
+    const total = gift ? 0 : ((Number(l.qty) || 0) * price);
+    return [
+      fComercial,           // A
+      fechaES,              // B
+      '',                   // C
+      l.ref,                // D
+      tsvClean(l.desc),     // E
+      tsvClean(l.gama),     // F
+      l.qty,                // G
+      esNum(price),         // H
+      fCliente,             // I
+      fContacto,            // J
+      '',                   // K
+      '',                   // L
+      fCliente,             // M
+      '',                   // N
+      esNum(total),         // O
+      mes,                  // P
+      ''                    // Q
+    ].join('\t');
+  });
+}
+
+// Copy the combined rows of all checked drafts to the clipboard so the
+// user can paste them in the Excel Base in a single go.
+function copySelectedDraftsToBase() {
+  const ids = Array.from(document.querySelectorAll('#draftsListInline .draft-select:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  const all = listDrafts();
+  const picked = ids.map(id => all.find(d => d.id === id)).filter(Boolean);
+  if (!picked.length) return;
+  const allRows = [];
+  picked.forEach(d => { allRows.push(...buildBaseTsvRowsFromDraft(d)); });
+  if (!allRows.length) {
+    toast('Los presupuestos seleccionados no tienen líneas', 'err');
+    return;
+  }
+  const tsv = allRows.join('\r\n');
+  navigator.clipboard.writeText(tsv).then(() => {
+    toast(`Copiadas ${allRows.length} filas de ${picked.length} presupuesto${picked.length === 1 ? '' : 's'} — pega en la primera celda vacía del Excel Base`, 'ok');
+    const hint = document.getElementById('copyHint');
+    if (hint) hint.style.display = 'block';
+  }, () => {
+    toast('No pude copiar — usa Ctrl+C manualmente', 'err');
+  });
+}
+
+// Export the currently-checked drafts as a single .json file the user
+// can share by WhatsApp/email/AirDrop/etc.
+function exportSelectedDrafts() {
+  const ids = Array.from(document.querySelectorAll('#draftsListInline .draft-select:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  const all = listDrafts();
+  const picked = all.filter(d => ids.includes(d.id));
+  if (!picked.length) return;
+  const payload = {
+    _type: 'milw_drafts_export',
+    _version: 1,
+    exportedAt: new Date().toISOString(),
+    drafts: picked
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = picked.length === 1
+    ? 'presupuesto-' + safeFilename(picked[0].name) + '.json'
+    : 'presupuestos-' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+// Read a .json exported by this same tool and merge the drafts into
+// the current browser. We always regenerate IDs so we never collide
+// with existing ones, and we skip entries that are already there
+// (same name + same timestamp) to avoid duplicates on re-import.
+function importDraftsFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let parsed;
+    try { parsed = JSON.parse(reader.result); }
+    catch (e) { toast('Archivo no válido (no es JSON)', 'err'); return; }
+    let incoming = [];
+    if (parsed && parsed._type === 'milw_drafts_export' && Array.isArray(parsed.drafts)) {
+      incoming = parsed.drafts;
+    } else if (Array.isArray(parsed)) {
+      incoming = parsed; // tolerate a raw array too
+    } else if (parsed && Array.isArray(parsed.lines)) {
+      incoming = [parsed]; // single-draft file
+    } else {
+      toast('Archivo no válido (formato desconocido)', 'err');
+      return;
+    }
+    const current = listDrafts();
+    const dupKey = d => (d.name || '') + '|' + (d.ts || '');
+    const existing = new Set(current.map(dupKey));
+    let added = 0;
+    incoming.forEach(d => {
+      if (!d || !Array.isArray(d.lines)) return;
+      if (existing.has(dupKey(d))) return;
+      current.unshift({
+        id: 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+        name: d.name || 'Borrador importado',
+        ts: d.ts || Date.now(),
+        lines: d.lines,
+        client: d.client || {}
+      });
+      existing.add(dupKey(d));
+      added++;
+    });
+    current.splice(DRAFT_LIMIT);
+    persistDrafts(current);
+    updateDraftsCount();
+    if (added > 0) toast(`Importados ${added} borrador${added === 1 ? '' : 'es'}`, 'ok');
+    else toast('No había borradores nuevos que importar', 'err');
+  };
+  reader.onerror = () => toast('No se pudo leer el archivo', 'err');
+  reader.readAsText(file);
+}
+
+// Wire up the toolbar buttons (runs once at startup).
+(function wireDraftToolbar() {
+  const selectAll = document.getElementById('draftSelectAll');
+  const btnExp = document.getElementById('btnExportDrafts');
+  const btnImp = document.getElementById('btnImportDrafts');
+  const fileInp = document.getElementById('importDraftsInput');
+  if (selectAll) selectAll.addEventListener('change', () => {
+    document.querySelectorAll('#draftsListInline .draft-select').forEach(c => { c.checked = selectAll.checked; });
+    updateDraftSelectionState();
+  });
+  if (btnExp) btnExp.addEventListener('click', exportSelectedDrafts);
+  const btnCopy = document.getElementById('btnCopyBaseSelected');
+  if (btnCopy) btnCopy.addEventListener('click', copySelectedDraftsToBase);
+  if (btnImp && fileInp) {
+    btnImp.addEventListener('click', () => fileInp.click());
+    fileInp.addEventListener('change', () => {
+      const f = fileInp.files && fileInp.files[0];
+      if (f) importDraftsFromFile(f);
+      fileInp.value = '';
+    });
+  }
+})();
 
 // Default name builder — used by save draft, Excel download and PDF print.
 // Format: "Presupuesto [Cliente]" if client is filled, otherwise "Presupuesto [dd-mm-yyyy]".
