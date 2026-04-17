@@ -124,8 +124,12 @@
   .empty-state { text-align: center; padding: 40px 20px; color: #888; }
   .row-count { font-size: 14px; color: #666; margin-bottom: 10px; }
   #addRef { margin-top: 10px; }
-  .manual-add { display: flex; gap: 8px; margin-top: 10px; }
-  .manual-add input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+  .manual-add { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .manual-add input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; box-sizing: border-box; height: 42px; line-height: normal; }
+  .manual-add input:focus { border-color: #db011c; outline: none; }
+  .manual-add #addRefInput { width: 100%; }
+  .manual-add #addQtyInput { width: 70px; text-align: center; flex: 0 0 70px; }
+  .manual-add #addRef { height: 42px; box-sizing: border-box; padding: 0 18px; line-height: 42px; flex: 0 0 auto; margin: 0; }
   @media print {
     header, .step:not(#presupuestoStep), .actions, .no-print, .mode-card, button, .manual-add, #addRef, footer { display: none !important; }
     body { background: #fff; }
@@ -191,7 +195,6 @@
       <div class="mode-card" data-mode="foto">
         <div class="icon">&#128247;</div>
         <div class="title">Desde una foto</div>
-        <div class="desc">Lista escrita, etiqueta, captura… la leo con OCR</div>
       </div>
       <div class="mode-card" data-mode="csv">
         <div class="icon">&#128196;</div>
@@ -301,11 +304,11 @@
     </div>
 
     <div class="manual-add no-print">
-      <div class="search-inline-wrap" style="flex: 1;">
-        <input id="addRefInput" placeholder="Añadir: referencia o descripción…" autocomplete="off">
+      <div class="search-inline-wrap" style="flex: 1 1 auto; min-width: 0;">
+        <input id="addRefInput" placeholder="Añadir referencia o descripción (ej. taladro m18, 4932500056…)" autocomplete="off">
         <div class="search-inline-results" id="addRefResults"></div>
       </div>
-      <input id="addQtyInput" type="number" value="1" min="1" style="width: 80px;">
+      <input id="addQtyInput" type="number" value="1" min="1" title="Cantidad">
       <button id="addRef">+ Añadir línea</button>
     </div>
 
@@ -318,12 +321,7 @@
     </div>
 
     <div class="actions no-print" style="margin-top: 24px; align-items: center;">
-      <div style="display: flex; align-items: center; gap: 6px; background: #1a1a1a; padding: 4px 4px 4px 10px; border-radius: 6px;">
-        <label for="fStartRow" style="color: #ccc; font-size: 12px; font-weight: 600;">Pegar desde fila:</label>
-        <span class="help-icon" title="En el Excel 'Base', pulsa Ctrl+Fin para ir a la última celda con datos. La fila siguiente es la que pones aquí (normalmente la primera vacía). Así las fórmulas se generan con el número de fila correcto.">?</span>
-        <input id="fStartRow" type="number" min="2" value="2" style="width: 70px; padding: 6px; border: 0; border-radius: 4px; font-size: 14px; text-align: center;">
-        <button id="btnCopyBase" class="secondary" style="border-radius: 4px;">&#128203; Copiar para Excel "Base"</button>
-      </div>
+      <button id="btnCopyBase" class="secondary">&#128203; Pegar en el Excel "Base"</button>
       <button id="btnExcel">&#128190; Descargar en Excel</button>
       <button id="btnPrint">&#128424; Imprimir / Guardar PDF</button>
       <button id="btnSaveDraft" class="ghost">&#128190; Guardar borrador</button>
@@ -333,11 +331,7 @@
     </div>
 
     <div class="warning no-print" id="copyHint" style="display: none; margin-top: 14px;">
-      <b>Pega en el Excel "Base":</b> abre el Excel, haz clic en la celda <b>A<span id="copyHintRow">2</span></b> (columna A, en la fila que indicaste) y pulsa <b>Ctrl+V</b>. Se rellenan las 17 columnas a la vez — comercial, fecha, referencia, cantidad y las fórmulas de descripción, marca, precio y total. Cliente y contacto se rellenan si los escribiste arriba.
-    </div>
-
-    <div class="warning no-print" style="margin-top: 8px; background: #e7f3ff; border-left-color: #0057b8; color: #002e5d; font-size: 12px;">
-      <b>Truco:</b> en el Excel Base pulsa <b>Ctrl+Fin</b> para ir a la última celda con datos; la fila siguiente es la que debes poner arriba como "Pegar desde fila".
+      <b>Ya tienes las filas copiadas.</b> Abre el Excel "Base", haz clic en la <b>primera celda vacía de la columna A</b> y pulsa <b>Ctrl+V</b>. Se rellenan las 17 columnas con los datos ya completos (referencia, descripción, marca, precio y total) — no hay fórmulas, así que no se puede romper nada al pegar.
     </div>
   </section>
 
@@ -530,6 +524,8 @@ function loadRefs(refs) {
 }
 function loadItems(items) {
   // Cumulative: if the ref already exists in `lines`, sum qty; otherwise push.
+  const stepEl = document.getElementById('presupuestoStep');
+  const wasHidden = !stepEl || stepEl.style.display === 'none' || stepEl.style.display === '';
   let added = 0, merged = 0;
   items.forEach(i => {
     const cat = CATALOG.get(i.ref);
@@ -564,8 +560,8 @@ function loadItems(items) {
     document.getElementById('fFecha').valueAsDate = new Date();
   }
   renderBudget();
-  // Scroll to budget only if it wasn't already visible
-  if (added + merged > 0) {
+  // Scroll to budget only the first time step 2 becomes visible — not on every subsequent add
+  if (wasHidden && (added + merged > 0)) {
     document.getElementById('presupuestoStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
@@ -827,14 +823,19 @@ function renderStep1Search() {
     searchCountEl.textContent = q.length === 0 ? '' : 'Escribe al menos 2 caracteres';
     return;
   }
-  const results = searchCatalog(q, 50);
+  const LIMIT = 200;
+  const results = searchCatalog(q, LIMIT);
   if (!results.length) {
     searchResultsEl.style.display = 'block';
     searchResultsEl.innerHTML = `<div class="search-empty">Sin resultados. Prueba con otras palabras o la referencia numérica.</div>`;
     searchCountEl.textContent = '0 resultados';
     return;
   }
-  searchCountEl.textContent = `${results.length}${results.length === 50 ? '+' : ''} resultados · pulsa «+ Añadir» para meter al presupuesto`;
+  if (results.length >= LIMIT) {
+    searchCountEl.innerHTML = `<b>Más de ${LIMIT} coincidencias</b> — los más relevantes arriba. Si no lo ves, afina la búsqueda (añade otra palabra o parte de la referencia).`;
+  } else {
+    searchCountEl.textContent = `${results.length} resultados · pulsa «+ Añadir» para meter al presupuesto`;
+  }
   searchResultsEl.style.display = 'block';
   searchResultsEl.innerHTML = results.map(it => `
     <div class="search-result" data-ref="${it.ref}">
@@ -874,7 +875,7 @@ function renderInlineSuggestions() {
   // If it's a pure 10-digit ref, no need to show suggestions
   if (/^\d{10}$/.test(q)) { closeAddRes(); return; }
   if (q.length < 2) { closeAddRes(); return; }
-  const results = searchCatalog(q, 12);
+  const results = searchCatalog(q, 50);
   if (!results.length) {
     addRes.innerHTML = `<div class="search-empty">Sin resultados</div>`;
     addRes.classList.add('open');
@@ -978,48 +979,42 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
   const fechaES = `${dd}/${mm}/${yy}`;
   const mes = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][parseInt(mm, 10) - 1] || '';
 
-  // Target row to paste at — used to build VLOOKUP formulas with the right row numbers
-  const startRow = Math.max(2, parseInt(document.getElementById('fStartRow').value, 10) || 2);
-
-  // Build 17-col TSV, row by row. Formula cols (E,F,H,O) get actual formulas
-  // with the destination row number so VLOOKUPs work once pasted.
-  const rows = lines.map((l, idx) => {
-    const row = startRow + idx;
+  // Build 17-col TSV with PLAIN VALUES only — no formulas.
+  // Formulas-in-TSV get mangled by Excel's clipboard parser (quotes get treated
+  // as CSV field quoting) and anyway English formula names (IF/VLOOKUP) don't
+  // work in Spanish Excel. Values always paste clean.
+  // - Decimals use "," (Spanish Excel locale) so Euro-formatted columns pick it up as a number.
+  // - Descriptions are sanitized to strip any stray tabs/newlines that would shift columns.
+  const tsvClean = (s) => String(s == null ? '' : s).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+  const esNum = (n) => (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).replace('.', ',');
+  const rows = lines.map((l) => {
     const gift = l.gift;
-    // If regalo, unit price = 0 (as a hardcoded number, not a formula)
-    const priceCell = gift ? '0' : `=IF(D${row}="","",VLOOKUP(D${row},Referencias!$A$2:$D$20000,4,0))`;
-    // If user edited the PVP in the tool, override the formula with the edited number
-    const priceCellFinal = (!gift && l.priceEdited) ? String((l.pvp || 0).toFixed(2)) : priceCell;
-    const descCell = `=IF(D${row}="","",VLOOKUP(D${row},Referencias!$A$2:$B$20000,2,0))`;
-    const marcaCell = `=IF(D${row}="","",VLOOKUP(D${row},Referencias!$A$2:$E$20000,5,0))`;
-    const totalCell = `=IF($D${row}="","",G${row}*H${row})`;
+    const price = gift ? 0 : (Number(l.pvp) || 0);
+    const total = gift ? 0 : ((Number(l.qty) || 0) * price);
     return [
-      fComercial,        // A JSS
-      fechaES,           // B Fecha visita
-      '',                // C Tipo Visita (lo rellena a mano)
-      l.ref,             // D Referencia
-      descCell,          // E Descripción (fórmula)
-      marcaCell,         // F Marca (fórmula)
-      l.qty,             // G Cantidad
-      priceCellFinal,    // H Precio unitario (fórmula o número si regalo/editado)
-      fCliente,          // I Usuario (vacío si no lo puso)
-      fContacto,         // J Contacto
-      '',                // K A través de quien (manual)
-      '',                // L Usuario nuevo (manual)
-      fCliente,          // M Cliente
-      '',                // N Venta (manual)
-      totalCell,         // O Importe total (fórmula)
-      mes,               // P Mes de Cierre en CRM
-      ''                 // Q Reportado en CRM (manual)
+      fComercial,           // A JSS
+      fechaES,              // B Fecha visita
+      '',                   // C Tipo Visita (Antonio la rellena)
+      l.ref,                // D Referencia
+      tsvClean(l.desc),     // E Descripción (valor del catálogo)
+      tsvClean(l.gama),     // F Marca (valor del catálogo)
+      l.qty,                // G Cantidad
+      esNum(price),         // H Precio unitario (valor)
+      fCliente,             // I Usuario
+      fContacto,            // J Contacto
+      '',                   // K A través de quien (manual)
+      '',                   // L Usuario nuevo (manual)
+      fCliente,             // M Cliente
+      '',                   // N Venta (manual)
+      esNum(total),         // O Importe total (valor = G·H)
+      mes,                  // P Mes de Cierre en CRM
+      ''                    // Q Reportado en CRM (manual)
     ].join('\t');
   });
   const tsv = rows.join('\r\n');
 
-  // Update hint label with the actual target row
-  document.getElementById('copyHintRow').textContent = startRow;
-
   navigator.clipboard.writeText(tsv).then(() => {
-    toast(`Copiado (${lines.length} filas) — pega en A${startRow} del Excel Base`, 'ok');
+    toast(`Copiado (${lines.length} filas) — pega en la primera celda vacía del Excel`, 'ok');
     document.getElementById('copyHint').style.display = 'block';
   }, () => {
     toast('No pude copiar — usa Ctrl+C manualmente', 'err');
@@ -1130,15 +1125,14 @@ function getClientState() {
     contacto: document.getElementById('fContacto').value,
     numero: document.getElementById('fNumero').value,
     fecha: document.getElementById('fFecha').value,
-    iva: document.getElementById('fIva').value,
-    startRow: document.getElementById('fStartRow').value
+    iva: document.getElementById('fIva').value
   };
 }
 function setClientState(s) {
   if (!s) return;
   const map = { fCliente:'cliente', fDireccion:'direccion', fPoblacion:'poblacion',
     fTelefono:'telefono', fContacto:'contacto', fNumero:'numero',
-    fFecha:'fecha', fIva:'iva', fStartRow:'startRow' };
+    fFecha:'fecha', fIva:'iva' };
   Object.entries(map).forEach(([id,key]) => {
     const el = document.getElementById(id);
     if (el && s[key] !== undefined && s[key] !== null) el.value = s[key];
