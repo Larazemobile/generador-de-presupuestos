@@ -1496,6 +1496,17 @@ document.getElementById('btnReset').addEventListener('click', () => {
   // Reset commercial discount inputs so a reused browser session starts clean.
   document.getElementById('fDiscVal').value = 0;
   document.getElementById('fDiscType').value = 'pct';
+  // Reset client/company fields so a new budget starts fully clean.
+  ['fCliente','fDireccion','fPoblacion','fTelefono','fContacto','fNumero'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('fFecha').value = '';
+  document.getElementById('fIva').value = 21;
+  const _cs = document.getElementById('fClienteStatus');
+  if (_cs) _cs.textContent = '';
+  const _sg = document.getElementById('fClienteSuggest');
+  if (_sg) _sg.style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
