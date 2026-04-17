@@ -124,12 +124,70 @@
   .empty-state { text-align: center; padding: 40px 20px; color: #888; }
   .row-count { font-size: 14px; color: #666; margin-bottom: 10px; }
   #addRef { margin-top: 10px; }
-  .manual-add { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .manual-add { display: flex; gap: 8px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
   .manual-add input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; box-sizing: border-box; height: 42px; line-height: normal; }
   .manual-add input:focus { border-color: #db011c; outline: none; }
+  .manual-add .search-inline-wrap { flex: 1 1 260px; min-width: 0; }
   .manual-add #addRefInput { width: 100%; }
   .manual-add #addQtyInput { width: 70px; text-align: center; flex: 0 0 70px; }
   .manual-add #addRef { height: 42px; box-sizing: border-box; padding: 0 18px; line-height: 42px; flex: 0 0 auto; margin: 0; }
+
+  /* ============= MOBILE / RESPONSIVE ============= */
+  @media (max-width: 820px) {
+    main { padding: 14px; }
+    .step { padding: 14px; border-radius: 6px; }
+    .step h2 { font-size: 16px; }
+    .client-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .totals { width: 100%; margin-left: 0; }
+  }
+  @media (max-width: 640px) {
+    header { padding: 10px 14px; gap: 10px; }
+    header .brand { gap: 10px; }
+    header .logo svg { height: 36px; }
+    main { padding: 10px; }
+    .step { padding: 12px; }
+    .step h2 { font-size: 15px; padding-left: 8px; }
+    .step .hint { font-size: 12px; }
+    .client-grid { grid-template-columns: 1fr; gap: 8px; }
+    .client-grid input, .client-grid select { font-size: 16px; } /* avoids iOS zoom */
+    #budgetTableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; padding: 0 12px; }
+    table.budget { min-width: 680px; font-size: 13px; }
+    table.budget th, table.budget td { padding: 6px 5px; }
+    table.budget input[type="number"] { width: 58px; font-size: 14px; padding: 5px; }
+    table.budget input.pvp-input { width: 72px; }
+    .manual-add { gap: 6px; }
+    .manual-add .search-inline-wrap { flex: 1 1 100%; }
+    .manual-add #addRefInput { font-size: 16px; } /* avoids iOS zoom */
+    .manual-add #addQtyInput { font-size: 16px; }
+    .manual-add #addRef { flex: 1 1 auto; }
+    .actions { gap: 6px; }
+    .actions button { padding: 9px 12px; font-size: 13px; flex: 1 1 auto; }
+    .actions .autosave-indicator { flex-basis: 100%; margin-left: 0; text-align: center; margin-top: 4px; }
+    .totals { padding: 12px 14px; }
+    .totals .row.grand { font-size: 16px; }
+    .mode-card { padding: 16px 12px; min-height: 110px; }
+    .mode-card .icon { font-size: 28px; }
+    .mode-card .title { font-size: 14px; }
+    .search-result { flex-wrap: wrap; gap: 6px; padding: 10px; }
+    .search-result .sr-ref { min-width: 0; flex: 0 0 auto; }
+    .search-result .sr-desc { flex: 1 1 100%; order: 3; }
+    .search-result .sr-pvp { min-width: 0; margin-left: auto; }
+    .search-result .sr-add { order: 4; flex: 1 1 100%; padding: 8px; }
+    .recovery-banner { padding: 12px; gap: 10px; }
+    .recovery-banner .rb-actions { flex: 1 1 100%; }
+    .recovery-banner .rb-actions button { flex: 1 1 auto; }
+    .dropzone { padding: 20px 12px; }
+    .modal-box { max-height: 92vh; }
+    .modal-head { padding: 12px 14px; }
+    .modal-head h3 { font-size: 15px; }
+    .modal-body { padding: 12px; }
+    .draft-row { flex-wrap: wrap; }
+    .draft-row .draft-info { flex: 1 1 100%; }
+    textarea { font-size: 14px; min-height: 100px; }
+    .warning { font-size: 12px; padding: 9px 12px; }
+  }
+  /* ============= END RESPONSIVE ============= */
+
   @media print {
     header, .step:not(#presupuestoStep), .actions, .no-print, .mode-card, button, .manual-add, #addRef, footer { display: none !important; }
     body { background: #fff; }
@@ -221,7 +279,7 @@
         <ul style="margin: 6px 0 0 18px; padding: 0;">
           <li><b>Capturas de pantalla</b> del programa o del catálogo → funcionan perfectas.</li>
           <li>Si es foto de la pegatina de la máquina: <b>de frente</b> (no de perfil), <b>cerca</b> (que llene la pantalla), <b>sin reflejos</b> y <b>enfocada</b> (toca la pantalla sobre la pegatina antes de disparar).</li>
-          <li>Si la letra es manuscrita o sale borrosa, mándame la foto por el chat de Cowork y te paso yo las referencias directas.</li>
+          <li>Si la letra es manuscrita o sale borrosa, pásasela a una IA (ChatGPT, Gemini, la que uses) y que te devuelva las referencias para pegarlas aquí.</li>
         </ul>
       </div>
       <div id="ocrStatus"></div>
@@ -425,7 +483,7 @@ async function handlePhoto(file) {
     if (refs.length === 0) {
       status.innerHTML = '<b>No he sabido leer referencias en esta foto.</b><br>' +
         'El OCR del navegador no puede con letra manuscrita. Opciones:<br>' +
-        '&nbsp;&nbsp;&nbsp;• Si es una lista a mano: <b>mándasela por chat a Claude en Cowork</b> y te devuelve las referencias para pegar aquí.<br>' +
+        '&nbsp;&nbsp;&nbsp;• Si es una lista a mano: <b>pásasela a una IA</b> (ChatGPT, Gemini, etc.) y pídele que te extraiga las referencias de 10 dígitos; luego pégalas en la pestaña "Escribir o buscar".<br>' +
         '&nbsp;&nbsp;&nbsp;• Si es texto impreso: prueba con una foto más nítida, bien enfocada y con buena luz.<br>' +
         '&nbsp;&nbsp;&nbsp;• Como último recurso: escríbelas o búscalas en la pestaña "Escribir o buscar".';
       toast('Sin referencias detectadas', 'err');
