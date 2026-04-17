@@ -308,6 +308,13 @@
   <!-- Recovery banner (populated by JS) -->
   <div id="recoveryBannerSlot" class="no-print"></div>
 
+  <!-- Saved drafts (visible on landing page — only shows when there are drafts) -->
+  <section class="step no-print" id="savedDraftsStep" style="display:none;">
+    <h2>&#128193; Mis presupuestos guardados</h2>
+    <div class="hint">Clica <b>Abrir</b> para continuar con uno guardado, o la papelera para borrarlo. Se guardan en este navegador.</div>
+    <div id="draftsListInline"></div>
+  </section>
+
   <!-- Print-only header -->
   <div class="print-only" id="printHeader">
     <div class="print-brand" style="color:#c92a28;">
@@ -1664,10 +1671,47 @@ function loadDraft(id) {
 }
 function updateDraftsCount() {
   const badge = document.getElementById('draftsCount');
-  if (!badge) return;
-  const n = listDrafts().length;
-  if (n > 0) { badge.textContent = n; badge.style.display = 'inline-block'; }
-  else { badge.style.display = 'none'; }
+  if (badge) {
+    const n = listDrafts().length;
+    if (n > 0) { badge.textContent = n; badge.style.display = 'inline-block'; }
+    else { badge.style.display = 'none'; }
+  }
+  renderDraftsInline();
+}
+
+// Inline drafts list shown on the landing page so the user can open a
+// saved budget without having to start a new one first.
+function renderDraftsInline() {
+  const body = document.getElementById('draftsListInline');
+  const section = document.getElementById('savedDraftsStep');
+  if (!body || !section) return;
+  const drafts = listDrafts();
+  if (!drafts.length) {
+    section.style.display = 'none';
+    body.innerHTML = '';
+    return;
+  }
+  section.style.display = 'block';
+  body.innerHTML = drafts.map(d => {
+    const total = (d.lines || []).reduce((s,l) => s + (l.gift?0:(l.qty||0)*(l.pvp||0)), 0);
+    const cliente = (d.client && d.client.cliente) || '(sin cliente)';
+    return `
+      <div class="draft-row">
+        <div class="draft-info">
+          <b>${escapeHtml(d.name)}</b>
+          <small>${escapeHtml(cliente)} &middot; ${d.lines.length} líneas &middot; ${total.toFixed(2)} € &middot; ${new Date(d.ts).toLocaleString('es-ES', { dateStyle:'short', timeStyle:'short' })}</small>
+        </div>
+        <button class="btn-small draft-open-inline" data-id="${d.id}">Abrir</button>
+        <button class="btn-small danger draft-del-inline" data-id="${d.id}" title="Borrar">&#128465;</button>
+      </div>`;
+  }).join('');
+  body.querySelectorAll('.draft-open-inline').forEach(b => b.addEventListener('click', () => {
+    loadDraft(b.dataset.id);
+  }));
+  body.querySelectorAll('.draft-del-inline').forEach(b => b.addEventListener('click', () => {
+    if (!confirm('¿Borrar este borrador?')) return;
+    deleteDraft(b.dataset.id);
+  }));
 }
 
 // Default name builder — used by save draft, Excel download and PDF print.
