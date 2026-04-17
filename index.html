@@ -325,6 +325,10 @@
         <label>Cliente (empresa) <span id="fClienteStatus" style="font-weight:400;color:#0057b8;font-size:11px;margin-left:4px;"></span></label>
         <input id="fCliente" placeholder="Nombre de la empresa" autocomplete="off">
         <div id="fClienteSuggest" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ccc; border-top:0; border-radius:0 0 4px 4px; z-index:10; max-height:220px; overflow-y:auto; box-shadow:0 4px 10px rgba(0,0,0,0.1);"></div>
+        <div class="no-print" style="margin-top: 4px; font-size: 11px; color: #666; line-height: 1.4; display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+          <span>Al escribir se busca la dirección en OpenStreetMap.</span>
+          <button id="btnBuscarGoogle" type="button" class="ghost" style="padding: 2px 8px; font-size: 11px;">Buscar en Google Maps</button>
+        </div>
       </div>
       <div><label>Dirección</label><input id="fDireccion" placeholder="Calle, nº"></div>
       <div><label>Población / Ciudad</label><input id="fPoblacion" placeholder="Población"></div>
@@ -334,11 +338,6 @@
       <div><label>Fecha</label><input id="fFecha" type="date"></div>
       <div><label>Comercial</label><input id="fComercial" value="Antonio Torres" readonly style="background:#f5f5f5;cursor:not-allowed;" title="Nombre fijo"></div>
       <div><label>IVA (%)</label><input id="fIva" type="number" value="21" min="0" max="100"></div>
-    </div>
-
-    <div class="no-print" style="margin-top: -8px; margin-bottom: 14px; font-size: 12px; color: #666;">
-      Al escribir el nombre de la empresa se busca automáticamente la dirección en OpenStreetMap.
-      <button id="btnBuscarGoogle" type="button" class="ghost" style="padding: 4px 10px; font-size: 12px; margin-left: 6px;">Buscar en Google Maps</button>
     </div>
 
     <div class="row-count" id="rowCount"></div>
