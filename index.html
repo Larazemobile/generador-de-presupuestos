@@ -321,6 +321,7 @@
       <span id="draftSelectedCount" style="font-size:12px; color:#666;"></span>
       <span style="flex:1;"></span>
       <button type="button" class="btn-small" id="btnCopyBaseSelected" disabled>&#128203; Copiar al Excel Base</button>
+      <button type="button" class="btn-small" id="btnCsvCrmSelected" disabled>&#128196; CSV para CRM</button>
       <button type="button" class="btn-small ghost" id="btnExportDrafts" disabled>&#128228; Exportar seleccionados</button>
       <button type="button" class="btn-small ghost" id="btnImportDrafts">&#128229; Importar</button>
       <input type="file" id="importDraftsInput" accept=".json,application/json" style="display:none;">
@@ -685,6 +686,16 @@
             <li><span class="step-num">3</span> Abre el Excel, ponte en la primera celda vacía de la columna A y pega con <kbd>Ctrl</kbd>+<kbd>V</kbd>.</li>
           </ol>
           <p>Se pegan las filas de todos los presupuestos seleccionados de una vez, y cada fila lleva el <b>cliente, la fecha y el contacto que tenía guardados ese presupuesto</b>, no se mezclan.</p>
+
+          <h5>CSV para el CRM</h5>
+          <p>Si lo que necesitas es subir las referencias al <b>CRM</b> (no al Excel Base), usa el botón <b>«CSV para CRM»</b> que está en la misma barra. Descarga un archivo <code>.csv</code> con el formato exacto que el CRM espera:</p>
+          <ul>
+            <li>Separador punto y coma.</li>
+            <li>Cabecera fija: <code>Material Number;Amount;Service Period;Leasing Period;Payment;Insurance</code>.</li>
+            <li>Una fila por línea de producto: <code>referencia;cantidad;;;;</code>.</li>
+          </ul>
+          <p>Marca uno, varios o todos los borradores, clica el botón y el CSV se descarga listo para subirlo al CRM. Cada línea va tal cual, respetando el orden de los presupuestos.</p>
+          <div class="tip">El CSV sólo lleva <b>referencia y cantidad</b>. Los regalos cuentan como unidades (el CRM controla material, no el descuento comercial).</div>
         </section>
 
         <section class="tut-section" data-tut="export">
@@ -718,6 +729,9 @@
 
           <h5>¿Puedo pasar varios presupuestos al Excel Base a la vez?</h5>
           <p>Sí. En la lista <b>«Mis presupuestos guardados»</b> marca los que quieras con los checkboxes y clica <b>«Copiar al Excel Base»</b>. Se copian todas las filas de todos los presupuestos seleccionados de golpe y las pegas en el Excel con un solo Ctrl+V.</p>
+
+          <h5>¿Y para subir las referencias al CRM?</h5>
+          <p>Marca los borradores que quieras en la lista y clica <b>«CSV para CRM»</b>. Te descarga un archivo <code>.csv</code> con el formato que el CRM espera (cabecera <code>Material Number;Amount;Service Period;Leasing Period;Payment;Insurance</code> y una fila por referencia). Lo subes al CRM y listo.</p>
 
           <h5>¿Puedo poner mi propia imagen en una línea?</h5>
           <p>Sí. En la columna de foto pulsa la <b>X</b> para quitar la del catálogo (si la tiene) y aparecerá un icono de <b>cámara 📷</b>. Clícalo para subir una foto o captura tuya. Se guarda con el borrador y sale también al imprimir a PDF.</p>
@@ -1809,12 +1823,14 @@ function renderDraftsInline() {
   // Controls that only make sense when there are drafts to act on.
   const selWrap  = document.getElementById('draftSelectAll');
   const btnCopy  = document.getElementById('btnCopyBaseSelected');
+  const btnCrm   = document.getElementById('btnCsvCrmSelected');
   const btnExp   = document.getElementById('btnExportDrafts');
   const countEl  = document.getElementById('draftSelectedCount');
   const selLabel = selWrap ? selWrap.closest('label') : null;
   const showBulk = drafts.length > 0;
   if (selLabel) selLabel.style.display = showBulk ? '' : 'none';
   if (btnCopy)  btnCopy.style.display  = showBulk ? '' : 'none';
+  if (btnCrm)   btnCrm.style.display   = showBulk ? '' : 'none';
   if (btnExp)   btnExp.style.display   = showBulk ? '' : 'none';
   if (countEl)  countEl.style.display  = showBulk ? '' : 'none';
   // Section is always visible so Import is always reachable, even on a
@@ -1881,6 +1897,8 @@ function updateDraftSelectionState() {
   if (btnExp) btnExp.disabled = selected.length === 0;
   const btnCopy = document.getElementById('btnCopyBaseSelected');
   if (btnCopy) btnCopy.disabled = selected.length === 0;
+  const btnCrm = document.getElementById('btnCsvCrmSelected');
+  if (btnCrm) btnCrm.disabled = selected.length === 0;
 }
 
 // Build the 17-column TSV rows for a single saved draft, using that
@@ -1927,6 +1945,56 @@ function buildBaseTsvRowsFromDraft(draft) {
       ''                    // Q
     ].join('\t');
   });
+}
+
+// Build the CRM-import CSV for the selected drafts. Format is fixed by
+// the CRM so we must not change the header or the column order.
+// Header: "Material Number;Amount;Service Period;Leasing Period;Payment;Insurance"
+// Rows:   "<ref>;<qty>;;;;"
+// We keep the order of the user's drafts and their lines. Gifts count
+// as units (the CRM tracks materials, not the commercial discount).
+function buildCrmCsvFromDrafts(drafts) {
+  const header = 'Material Number;Amount;Service Period;Leasing Period;Payment;Insurance';
+  const rows = [header];
+  drafts.forEach(d => {
+    if (!d || !Array.isArray(d.lines)) return;
+    d.lines.forEach(l => {
+      if (!l || !l.ref) return;
+      const qty = Math.max(1, parseInt(l.qty, 10) || 1);
+      rows.push(`${l.ref};${qty};;;;`);
+    });
+  });
+  // CRLF to be safe with Windows-based CRM importers.
+  return rows.join('\r\n') + '\r\n';
+}
+
+// Download the CRM CSV file for the currently-checked drafts.
+function downloadCsvCrmForSelected() {
+  const ids = Array.from(document.querySelectorAll('#draftsListInline .draft-select:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  const all = listDrafts();
+  const picked = ids.map(id => all.find(d => d.id === id)).filter(Boolean);
+  if (!picked.length) return;
+  const totalLines = picked.reduce((s, d) => s + (Array.isArray(d.lines) ? d.lines.length : 0), 0);
+  if (!totalLines) {
+    toast('Los presupuestos seleccionados no tienen líneas', 'err');
+    return;
+  }
+  const csv = buildCrmCsvFromDrafts(picked);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  const baseName = picked.length === 1
+    ? 'crm-' + safeFilename(((picked[0].client && picked[0].client.cliente) || picked[0].name || 'presupuesto'))
+    : 'crm-referencias-' + stamp;
+  a.href = url;
+  a.download = baseName + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+  toast(`CSV CRM con ${totalLines} línea${totalLines === 1 ? '' : 's'} de ${picked.length} presupuesto${picked.length === 1 ? '' : 's'} descargado`, 'ok');
 }
 
 // Copy the combined rows of all checked drafts to the clipboard so the
@@ -2043,6 +2111,8 @@ function importDraftsFromFile(file) {
   if (btnExp) btnExp.addEventListener('click', exportSelectedDrafts);
   const btnCopy = document.getElementById('btnCopyBaseSelected');
   if (btnCopy) btnCopy.addEventListener('click', copySelectedDraftsToBase);
+  const btnCrm = document.getElementById('btnCsvCrmSelected');
+  if (btnCrm) btnCrm.addEventListener('click', downloadCsvCrmForSelected);
   if (btnImp && fileInp) {
     btnImp.addEventListener('click', () => fileInp.click());
     fileInp.addEventListener('change', () => {
