@@ -116,6 +116,15 @@
   .totals { margin-top: 16px; background: #fafafa; border: 1px solid #e0e0e0; padding: 14px 18px; border-radius: 6px; margin-left: auto; width: 340px; }
   .totals .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; }
   .totals .row.grand { font-size: 18px; font-weight: 700; border-top: 2px solid #000; padding-top: 8px; margin-top: 8px; color: #db011c; }
+  .totals .disc-row .disc-label { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .totals .disc-row .disc-controls { display: inline-flex; align-items: center; gap: 4px; }
+  .totals .disc-row input#fDiscVal { width: 70px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; -moz-appearance: textfield; }
+  .totals .disc-row input#fDiscVal::-webkit-outer-spin-button,
+  .totals .disc-row input#fDiscVal::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .totals .disc-row select#fDiscType { padding: 3px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; background: #fff; }
+  .totals .disc-row.has-discount { color: #b8860b; font-weight: 600; }
+  .totals .disc-row.has-discount #tDisc { color: #b8860b; }
+  .totals .disc-row:not(.has-discount) #tDisc { color: #888; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 12px 20px; border-radius: 6px; font-weight: 600; z-index: 1000; opacity: 0; transition: opacity .2s; }
   .toast.show { opacity: 1; }
   .toast.ok { background: #0a7c2f; }
@@ -186,21 +195,80 @@
     textarea { font-size: 14px; min-height: 100px; }
     .warning { font-size: 12px; padding: 9px 12px; }
   }
+  /* Help FAB (bottom-right floating button) */
+  .help-fab { position: fixed; bottom: 22px; right: 22px; z-index: 900; background: #000; color: #fff; border: 0; border-radius: 999px; padding: 12px 20px 12px 16px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
+  .help-fab:hover { background: #db011c; }
+  .help-fab .help-bubble { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #db011c; color: #fff; font-family: serif; font-style: italic; font-weight: 700; font-size: 16px; }
+  .help-fab:hover .help-bubble { background: #000; }
+  @media (max-width: 640px) {
+    .help-fab { bottom: 14px; right: 14px; padding: 10px 14px 10px 12px; font-size: 13px; }
+  }
+  /* Tutorial modal */
+  .tutorial-modal .modal-box { max-width: 760px; }
+  .tutorial-modal .modal-body { padding: 0; }
+  .tut-nav { display: flex; gap: 4px; padding: 10px 14px; background: #f5f5f5; border-bottom: 1px solid #e0e0e0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tut-nav button { background: transparent; color: #333; border: 0; padding: 8px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; border-radius: 4px; cursor: pointer; letter-spacing: 0; }
+  .tut-nav button:hover { background: #fff; }
+  .tut-nav button.active { background: #db011c; color: #fff; }
+  .tut-section { padding: 20px 24px 24px; display: none; line-height: 1.6; color: #1a1a1a; font-size: 14px; }
+  .tut-section.active { display: block; }
+  .tut-section h4 { font-size: 17px; margin-bottom: 10px; color: #000; border-left: 3px solid #db011c; padding-left: 10px; }
+  .tut-section h5 { font-size: 14px; font-weight: 700; margin-top: 14px; margin-bottom: 4px; color: #000; }
+  .tut-section p { margin-bottom: 10px; }
+  .tut-section ul, .tut-section ol { margin: 8px 0 10px 20px; }
+  .tut-section li { margin-bottom: 6px; }
+  .tut-section .tip { background: #fff8e1; border-left: 3px solid #ffa500; padding: 10px 12px; border-radius: 4px; font-size: 13px; color: #5a4400; margin: 10px 0; }
+  .tut-section .warn { background: #ffe3e3; border-left: 3px solid #c00; padding: 10px 12px; border-radius: 4px; font-size: 13px; color: #800; margin: 10px 0; }
+  .tut-section code, .tut-section kbd { background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-family: 'Menlo', monospace; font-size: 12px; color: #000; }
+  .tut-section .step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #db011c; color: #fff; font-weight: 700; font-size: 12px; margin-right: 8px; vertical-align: middle; }
+  @media (max-width: 640px) {
+    .tut-section { padding: 14px 14px 18px; font-size: 13px; }
+    .tut-nav { padding: 8px 10px; }
+    .tut-nav button { font-size: 12px; padding: 6px 10px; }
+  }
   /* ============= END RESPONSIVE ============= */
 
   @media print {
+    @page { margin: 18mm 16mm 20mm 16mm; }
     header, .step:not(#presupuestoStep), .actions, .no-print, .mode-card, button, .manual-add, #addRef, footer { display: none !important; }
     body { background: #fff; }
     .step { box-shadow: none; border: 0; padding: 0; }
     main { max-width: none; padding: 0; }
     .print-only { display: block !important; }
+    /* Hide the "2 · Presupuesto" heading and the row count in print */
+    #presupuestoStep > h2,
+    #rowCount { display: none !important; }
+    /* Force color rendering on the print banner if browser honors it */
+    .print-only .print-brand { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Inputs inside the budget table look ugly in print — strip borders/backgrounds */
+    table.budget input[type="number"],
+    table.budget input.pvp-input,
+    table.budget input[type="text"] {
+      border: 0 !important; background: transparent !important; padding: 0 !important;
+      box-shadow: none !important; width: auto !important; text-align: inherit !important;
+      font: inherit !important; color: #000 !important;
+    }
+    /* A bit more breathing room inside the table */
+    table.budget th, table.budget td { padding: 7px 10px; }
+    /* Totals — keep on the right but let it fit print page */
+    .totals { width: 340px; max-width: 60%; margin-top: 14px; margin-right: 0; }
+    /* Discount row: only show in print if there's actually a discount */
+    .totals .disc-row:not(.has-discount) { display: none !important; }
+    .totals .disc-row.has-discount { color: #000 !important; font-weight: 600; }
+    .totals .disc-row.has-discount #tDisc { color: #000 !important; }
+    /* Avoid cutting rows across pages when possible */
+    table.budget tr { page-break-inside: avoid; }
+    table.budget thead { display: table-header-group; }
+    .print-only { page-break-after: avoid; }
   }
   .print-only { display: none; }
-  .print-only .print-brand { background: #db011c; color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; border-bottom: 3px solid #000; }
-  .print-only .print-brand svg { display: block; height: 44px; width: auto; }
-  .print-only .print-brand .ptag { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; opacity: 0.9; }
-  .print-only h1 { font-size: 26px; margin-bottom: 4px; color: #db011c; }
-  .print-only .doc-meta { font-size: 13px; color: #555; margin-bottom: 20px; }
+  /* Print banner: red logo on WHITE — prints reliably without depending on background colors */
+  .print-only .print-brand { padding: 4px 0 12px; display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; border-bottom: 3px solid #db011c; gap: 16px; }
+  .print-only .print-brand svg { display: block; height: 46px; width: auto; }
+  .print-only .print-brand .ptag { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #db011c; white-space: nowrap; padding-bottom: 3px; }
+  .print-only h1 { font-size: 26px; margin-bottom: 4px; color: #db011c; font-weight: 800; letter-spacing: 0.5px; }
+  .print-only .doc-meta { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+  .print-only .doc-meta b { color: #000; }
   footer { text-align: center; padding: 20px; color: #888; font-size: 12px; }
 </style>
 </head>
@@ -208,13 +276,8 @@
 
 <header>
   <div class="brand">
-    <div class="logo">
-      <svg viewBox="0 0 420 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Milwaukee">
-        <g fill="#fff">
-          <text x="0" y="75" font-family="Impact, 'Arial Black', Helvetica, sans-serif" font-size="78" font-style="italic" font-weight="900" letter-spacing="-3">Milwaukee</text>
-          <polygon points="8,90 70,83 60,94 140,85 130,96 235,88 355,82 415,85 405,94 355,91 240,97 140,93 60,97 14,96"/>
-        </g>
-      </svg>
+    <div class="logo" style="color:#fff;">
+      <svg viewBox="35.433 35.467 885.827 396.073" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Milwaukee"><path fill="currentColor" d="m921.26 159.18-233.355 88.637 13.57-29.26-316.243 108.07 17.513-36.23-367.228 141.143 275.734-69.218-22.593 43.5 341.844-127.307-19.536 37.918zm-52.156-107.335c1.655 0 3.209-.133 3.209-2.139 0-1.621-1.504-1.905-2.875-1.905h-2.673v4.044zm-2.34 7.32h-2.005v-13.035h4.997c3.058 0 4.579 1.136 4.579 3.694 0 2.338-1.437 3.374-3.376 3.592l3.693 5.749h-2.189l-3.46-5.649h-2.238zm2.39 2.908c5.114 0 9.175-4.011 9.175-9.459 0-5.348-4.061-9.392-9.175-9.392-5.18 0-9.224 4.044-9.224 9.392 0 5.448 4.044 9.459 9.224 9.459m-11.514-9.459c0-6.484 5.264-11.28 11.514-11.28 6.167 0 11.43 4.796 11.43 11.28 0 6.55-5.263 11.364-11.43 11.364-6.25 0-11.514-4.813-11.514-11.364m-616.191 36.781-40.458 34.157s-16.093-18.081-17.346-19.485c-1.404 1.203-34.509 29.278-34.509 29.278l4.713-46.608-118.416 99.783 80.865-38.82-20.772 174.33s24.766 18.316 26.822 19.704c2.089-16.629 22.075-176.32 23.162-185.01l.066-.35 23.413-19.754 4.98 4.914-18.834 159.023s25.167 18.784 26.772 19.87c.183-1.572 17.045-145.689 21.056-180.063l23.262-19.686 4.946 4.896-18.182 155.064 26.772 19.735 21.891-188.719zm65.725 34.877-27.941 4.746-3.46 27.372 27.908-5.28zm150.183 11.48-11.23 86.931-6.2 6.652-10.511-8.724 10.445-81.751-27.958 6.802-10.762 85.06-8.256 10.996-8.823-7.804 10.495-85.596-28.059 5.867-9.375 77.84-11.63 15.81-8.206-6.652 18.115-146.473-27.39 4.429-16.894 140.724-13.938 19.185-6.918-5.749 11.598-85.778-27.958 5.715-12.951 99.416 24.615 19.3 24.231-32.737 25.318 20.255 24.381-33.155 26.137 22.726 25.785-34.124 20.956 18.449 36.247-39.388 11.13-83.104zm66.344 57.152-11.28 13.837-6.033-5.197 9.19-72.342 15.191 8.055zm245.688-103.541 13.218 15.373-16.41 9.041zm70.27-14.373 12.166 14.522-15.057 8.523zm1.788 57.018-8.055-6.767 1.655-13.269 37.6-21.274-30.33-37.567-27.658 24.149-6.5 52.19-36.849 20.285-8.773-7.201 1.805-14.038 40.875-22.544-32.937-39.755-30.064 25.583-6.35 49.532-13.352 12.936-21.023-41.51 47.092-42.966-21.374 3.108-35.46 30.197 8.472-67.63-25.635 3.543-14.305 115.842-15.525 17.061-3.66-3.074 9.309-73.495-27.607 6.333-8.623 66.46-12.266 14.84-5.23-4.546 9.257-72.893-27.807 5.53-8.606 68.165-12.868 16.378-5.648-4.948 9.592-76.118-27.74 5.965-.636 5.917-19.368-9.342-27.222 34.76-7.871 62.08 26.32 22.377 24.164-31.15 20.755 17.632 22.66-29.095 19.486 17.061 21.39-28.041 20.388 17.714 27.607-29.996 21.022 16.66 6.3-50.918 22.11 45.354 29.328-28.576 19.034 16.025 56.7-31.316 14.49 12.5 52.071-30.447 1.42-11.18z"/></svg>
     </div>
     <div>
       <h1>Generador de Presupuestos</h1>
@@ -231,13 +294,8 @@
 
   <!-- Print-only header -->
   <div class="print-only" id="printHeader">
-    <div class="print-brand">
-      <svg viewBox="0 0 420 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Milwaukee">
-        <g fill="#fff">
-          <text x="0" y="75" font-family="Impact, 'Arial Black', Helvetica, sans-serif" font-size="78" font-style="italic" font-weight="900" letter-spacing="-3">Milwaukee</text>
-          <polygon points="8,90 70,83 60,94 140,85 130,96 235,88 355,82 415,85 405,94 355,91 240,97 140,93 60,97 14,96"/>
-        </g>
-      </svg>
+    <div class="print-brand" style="color:#c92a28;">
+      <svg viewBox="35.433 35.467 885.827 396.073" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Milwaukee"><path fill="currentColor" d="m921.26 159.18-233.355 88.637 13.57-29.26-316.243 108.07 17.513-36.23-367.228 141.143 275.734-69.218-22.593 43.5 341.844-127.307-19.536 37.918zm-52.156-107.335c1.655 0 3.209-.133 3.209-2.139 0-1.621-1.504-1.905-2.875-1.905h-2.673v4.044zm-2.34 7.32h-2.005v-13.035h4.997c3.058 0 4.579 1.136 4.579 3.694 0 2.338-1.437 3.374-3.376 3.592l3.693 5.749h-2.189l-3.46-5.649h-2.238zm2.39 2.908c5.114 0 9.175-4.011 9.175-9.459 0-5.348-4.061-9.392-9.175-9.392-5.18 0-9.224 4.044-9.224 9.392 0 5.448 4.044 9.459 9.224 9.459m-11.514-9.459c0-6.484 5.264-11.28 11.514-11.28 6.167 0 11.43 4.796 11.43 11.28 0 6.55-5.263 11.364-11.43 11.364-6.25 0-11.514-4.813-11.514-11.364m-616.191 36.781-40.458 34.157s-16.093-18.081-17.346-19.485c-1.404 1.203-34.509 29.278-34.509 29.278l4.713-46.608-118.416 99.783 80.865-38.82-20.772 174.33s24.766 18.316 26.822 19.704c2.089-16.629 22.075-176.32 23.162-185.01l.066-.35 23.413-19.754 4.98 4.914-18.834 159.023s25.167 18.784 26.772 19.87c.183-1.572 17.045-145.689 21.056-180.063l23.262-19.686 4.946 4.896-18.182 155.064 26.772 19.735 21.891-188.719zm65.725 34.877-27.941 4.746-3.46 27.372 27.908-5.28zm150.183 11.48-11.23 86.931-6.2 6.652-10.511-8.724 10.445-81.751-27.958 6.802-10.762 85.06-8.256 10.996-8.823-7.804 10.495-85.596-28.059 5.867-9.375 77.84-11.63 15.81-8.206-6.652 18.115-146.473-27.39 4.429-16.894 140.724-13.938 19.185-6.918-5.749 11.598-85.778-27.958 5.715-12.951 99.416 24.615 19.3 24.231-32.737 25.318 20.255 24.381-33.155 26.137 22.726 25.785-34.124 20.956 18.449 36.247-39.388 11.13-83.104zm66.344 57.152-11.28 13.837-6.033-5.197 9.19-72.342 15.191 8.055zm245.688-103.541 13.218 15.373-16.41 9.041zm70.27-14.373 12.166 14.522-15.057 8.523zm1.788 57.018-8.055-6.767 1.655-13.269 37.6-21.274-30.33-37.567-27.658 24.149-6.5 52.19-36.849 20.285-8.773-7.201 1.805-14.038 40.875-22.544-32.937-39.755-30.064 25.583-6.35 49.532-13.352 12.936-21.023-41.51 47.092-42.966-21.374 3.108-35.46 30.197 8.472-67.63-25.635 3.543-14.305 115.842-15.525 17.061-3.66-3.074 9.309-73.495-27.607 6.333-8.623 66.46-12.266 14.84-5.23-4.546 9.257-72.893-27.807 5.53-8.606 68.165-12.868 16.378-5.648-4.948 9.592-76.118-27.74 5.965-.636 5.917-19.368-9.342-27.222 34.76-7.871 62.08 26.32 22.377 24.164-31.15 20.755 17.632 22.66-29.095 19.486 17.061 21.39-28.041 20.388 17.714 27.607-29.996 21.022 16.66 6.3-50.918 22.11 45.354 29.328-28.576 19.034 16.025 56.7-31.316 14.49 12.5 52.071-30.447 1.42-11.18z"/></svg>
       <div class="ptag">Nothing but HEAVY DUTY&trade;</div>
     </div>
     <h1 id="printTitle">PRESUPUESTO</h1>
@@ -371,7 +429,20 @@
 
     <div class="totals">
       <div class="row"><span>Subtotal</span><span id="tSub">0,00 €</span></div>
-      <div class="row"><span>Descuento por regalos</span><span id="tGift">0,00 €</span></div>
+      <div class="row" id="rGift"><span>Descuento por regalos</span><span id="tGift">0,00 €</span></div>
+      <div class="row disc-row" id="rDisc">
+        <span class="disc-label">
+          <span class="disc-label-text">Descuento comercial</span>
+          <span class="disc-controls no-print">
+            <input id="fDiscVal" type="number" min="0" step="0.01" value="0" title="Descuento" aria-label="Descuento comercial">
+            <select id="fDiscType" title="Tipo de descuento" aria-label="Tipo de descuento">
+              <option value="pct">%</option>
+              <option value="eur">€</option>
+            </select>
+          </span>
+        </span>
+        <span id="tDisc">0,00 €</span>
+      </div>
       <div class="row"><span>Base imponible</span><span id="tBase">0,00 €</span></div>
       <div class="row"><span>IVA</span><span id="tIva">0,00 €</span></div>
       <div class="row grand"><span>TOTAL</span><span id="tTotal">0,00 €</span></div>
@@ -389,6 +460,7 @@
 
     <div class="warning no-print" id="copyHint" style="display: none; margin-top: 14px;">
       <b>Ya tienes las filas copiadas.</b> Abre el Excel "Base", haz clic en la <b>primera celda vacía de la columna A</b> y pulsa <b>Ctrl+V</b>. Se rellenan las 17 columnas con los datos ya completos (referencia, descripción, marca, precio y total) — no hay fórmulas, así que no se puede romper nada al pegar.
+      <span id="copyHintDiscNote" style="display:none;"><br><b>Descuento comercial:</b> se reparte proporcionalmente entre las líneas, así el precio unitario de cada fila ya es el que se cobra al cliente.</span>
     </div>
   </section>
 
@@ -409,6 +481,174 @@
     </div>
   </div>
 </div>
+
+<!-- Tutorial modal -->
+<div class="modal-backdrop tutorial-modal no-print" id="tutorialModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>&#128161; Cómo funciona &mdash; guía rápida</h3>
+      <button class="modal-close" id="tutorialClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="tut-nav" role="tablist">
+        <button type="button" class="active" data-tut="intro">Empezar</button>
+        <button type="button" data-tut="add">Añadir productos</button>
+        <button type="button" data-tut="adjust">Ajustar líneas</button>
+        <button type="button" data-tut="save">Guardar borrador</button>
+        <button type="button" data-tut="excel">Pegar en tu Excel</button>
+        <button type="button" data-tut="export">Descargar e imprimir</button>
+        <button type="button" data-tut="recover">Recuperar trabajo</button>
+        <button type="button" data-tut="faq">Preguntas</button>
+      </div>
+
+      <section class="tut-section active" data-tut="intro">
+        <h4>Para qué sirve esto</h4>
+        <p>Esta herramienta te monta un <b>presupuesto</b> de Milwaukee sin pelearte con Excel.
+           Metes los productos (por foto, por CSV del programa, o buscándolos a mano),
+           ajustas cantidades y regalos, y te lo llevas a tu Excel de ventas o a un PDF listo para el cliente.</p>
+        <h5>Lo básico en 30 segundos</h5>
+        <ol>
+          <li><span class="step-num">1</span> Rellena los datos del cliente arriba (nombre, dirección, teléfono…).</li>
+          <li><span class="step-num">2</span> Añade productos por los tres modos de la sección <b>Añadir productos</b>.</li>
+          <li><span class="step-num">3</span> Revisa la tabla y ajusta cantidades, regalos o precios si hace falta.</li>
+          <li><span class="step-num">4</span> Usa los botones de la derecha: <b>Guardar borrador</b>, <b>Copiar para Excel Base</b>, <b>Descargar Excel</b> o <b>PDF / Imprimir</b>.</li>
+        </ol>
+        <div class="tip"><b>No necesitas internet</b> una vez cargada la página: puedes cerrar la pestaña, volver, y el trabajo sigue ahí. Todo se queda en <i>tu</i> navegador, no se sube a ningún sitio.</div>
+      </section>
+
+      <section class="tut-section" data-tut="add">
+        <h4>Tres maneras de añadir productos</h4>
+
+        <h5><span class="step-num">1</span> Desde una foto</h5>
+        <p>Si el cliente te ha apuntado los productos en un papel o tienes el ticket:</p>
+        <ul>
+          <li>Haz una foto (o arrastra una imagen) y la herramienta intenta leer las referencias automáticamente.</li>
+          <li>Te enseña lo que ha reconocido para que lo <b>revises antes</b> de añadirlo.</li>
+        </ul>
+        <div class="warn"><b>Si la foto sale borrosa o la letra es manuscrita</b> el reconocimiento puede fallar. En ese caso pásasela a una IA (ChatGPT, Gemini, etc.) y pídele las referencias, o usa el modo buscar.</div>
+
+        <h5><span class="step-num">2</span> Desde el CSV del programa</h5>
+        <p>Si te descargas un CSV (o Excel guardado como CSV) con referencias y cantidades:</p>
+        <ul>
+          <li>Arrastra el archivo a la zona &laquo;Desde el CSV del programa&raquo;.</li>
+          <li>La herramienta busca cada referencia en el catálogo Milwaukee y las mete en la tabla.</li>
+        </ul>
+
+        <h5><span class="step-num">3</span> Escribir o buscar</h5>
+        <p>Es el modo más rápido si ya sabes qué vendiste:</p>
+        <ul>
+          <li>En el buscador escribe la <b>referencia</b> (por ejemplo <code>M18FPD3</code>) o parte de la <b>descripción</b> (por ejemplo <code>taladro percutor</code>).</li>
+          <li>Clica el resultado para añadirlo con cantidad 1. Si lo vuelves a clicar, suma 1.</li>
+          <li>También puedes usar el buscador &laquo;+ Añadir línea&raquo; que hay al final de la tabla para añadir sobre la marcha sin subir a lo de arriba.</li>
+        </ul>
+        <div class="tip">Los tres modos <b>se pueden combinar</b>. Añade unas por foto, otras por CSV, y remata buscando a mano. Si repites referencia, la cantidad se suma sola.</div>
+      </section>
+
+      <section class="tut-section" data-tut="adjust">
+        <h4>Ajustar la tabla</h4>
+        <p>Cada fila de la tabla tiene:</p>
+        <ul>
+          <li><b>Cantidad</b>: edítala a mano.</li>
+          <li><b>Regalo</b>: marca la casilla si esa unidad se regala. Se descuenta del total (ver fila &laquo;Descuento por regalos&raquo;).</li>
+          <li><b>Precio unitario (PVP)</b>: si has pactado un precio distinto <i>solo en esa línea</i>, edítalo en la casilla. El total se recalcula al momento.</li>
+          <li><b>Eliminar</b>: la papelera borra la línea.</li>
+        </ul>
+
+        <h5>Descuento comercial (sobre el total)</h5>
+        <p>Si tu jefe te autoriza un descuento global (por ejemplo de 1.000&nbsp;&euro; a 800&nbsp;&euro;), <b>no hace falta</b> que cambies el PVP de cada línea a mano. Usa la fila <b>Descuento comercial</b> que tienes en los totales:</p>
+        <ol>
+          <li><span class="step-num">1</span> Escribe el valor del descuento en la casilla.</li>
+          <li><span class="step-num">2</span> Elige <b>%</b> (porcentaje sobre el subtotal) o <b>&euro;</b> (importe fijo a restar).</li>
+          <li><span class="step-num">3</span> La base imponible, el IVA y el TOTAL se recalculan solos.</li>
+        </ol>
+        <div class="tip">Ejemplo: subtotal 1.000 &euro;, quieres dejarlo en 800 &euro;. Pon <code>20</code> con <b>%</b> seleccionado, o <code>200</code> con <b>&euro;</b>. Sale lo mismo.</div>
+        <p>El descuento aparece también en el <b>PDF del cliente</b> (con la fila &laquo;Descuento comercial&raquo; visible sobre la base imponible) y, al <b>copiar al Excel Base</b>, se reparte proporcionalmente entre las líneas para que el precio unitario que queda en Excel sea el real que has cobrado.</p>
+
+        <h5>Totales</h5>
+        <p>Debajo de la tabla ves: Subtotal, Descuento por regalos, Descuento comercial (si lo hay), Base imponible, IVA (editable arriba, por defecto 21%) y <b>Total</b>.</p>
+        <div class="tip">Si tocas un PVP y te arrepientes, borra el valor y escribe el original. No hay botón de deshacer por línea.</div>
+      </section>
+
+      <section class="tut-section" data-tut="save">
+        <h4>Guardar como borrador</h4>
+        <p>El botón <b>Guardar borrador</b> (carpeta) te deja aparcar el presupuesto con un nombre y recuperarlo después.</p>
+        <ul>
+          <li>Te sugiere el nombre <code>Presupuesto [Cliente]</code> pero puedes cambiarlo.</li>
+          <li>Para abrirlo, usa <b>Mis borradores</b> y clica el que quieras.</li>
+          <li>Los borradores viven en <b>este navegador</b>. Si cambias de ordenador o borras los datos del navegador, se pierden.</li>
+        </ul>
+        <div class="warn">Esto no es una nube. Si quieres guardar una copia &laquo;de verdad&raquo;, descarga el Excel o el PDF.</div>
+      </section>
+
+      <section class="tut-section" data-tut="excel">
+        <h4>Pegar en tu Excel de ventas</h4>
+        <p>Este es el paso que te ahorra más tiempo. Pega el presupuesto entero en tu Excel base con dos clics.</p>
+        <ol>
+          <li><span class="step-num">1</span> Clica <b>Copiar para Excel Base</b>.</li>
+          <li><span class="step-num">2</span> Abre tu Excel de ventas.</li>
+          <li><span class="step-num">3</span> Colócate en la primera celda vacía de la columna <b>A</b> (la columna <i>JSS</i>).</li>
+          <li><span class="step-num">4</span> Pega con <kbd>Ctrl</kbd>+<kbd>V</kbd> (en Mac <kbd>Cmd</kbd>+<kbd>V</kbd>). Rellena las 17 columnas de golpe.</li>
+        </ol>
+        <div class="tip">Se pegan <b>valores en limpio</b>, sin fórmulas. Así no mareamos a tu Excel ni se rompe nada. Los precios van con coma decimal (1.234,56) como en Excel en español.</div>
+        <div class="warn">Si te da error al pegar: asegúrate de estar en la fila correcta y de que Excel está en <b>idioma español</b> (el separador decimal debe ser la coma). Si usas Excel en inglés, avísame y lo adaptamos.</div>
+      </section>
+
+      <section class="tut-section" data-tut="export">
+        <h4>Descargar e imprimir</h4>
+        <h5>Excel</h5>
+        <p>El botón <b>Descargar Excel</b> te genera un <code>.xlsx</code> con el presupuesto ya formateado. Se guarda como <code>Presupuesto [Cliente].xlsx</code>.</p>
+        <h5>PDF o imprimir</h5>
+        <p>El botón <b>PDF / Imprimir</b> abre el diálogo de impresión del navegador.</p>
+        <ul>
+          <li>Para <b>PDF</b>: en &laquo;Destino&raquo; elige <i>Guardar como PDF</i>.</li>
+          <li>Para <b>papel</b>: elige tu impresora y dale a imprimir.</li>
+          <li>El nombre por defecto es <code>Presupuesto [Cliente]</code>. Edítalo si quieres.</li>
+        </ul>
+        <div class="tip">En el PDF no aparecen botones, ni avisos, ni el buscador. Solo el presupuesto limpio con logo, datos del cliente, tabla y totales. Listo para mandar al cliente.</div>
+      </section>
+
+      <section class="tut-section" data-tut="recover">
+        <h4>Recuperar trabajo perdido</h4>
+        <p>La herramienta guarda automáticamente lo que tienes a medias cada pocos segundos en este navegador.</p>
+        <ul>
+          <li>Si se te cierra la pestaña por accidente, al volver a abrir la página te pregunta si quieres <b>recuperar</b> el último presupuesto.</li>
+          <li>Si le dices que no, se descarta.</li>
+          <li>Si quieres empezar de cero sin perder nada, <b>guarda borrador</b> primero y luego pulsa <b>Nuevo presupuesto</b>.</li>
+        </ul>
+        <div class="warn">Si limpias el historial / datos del navegador, se borran también los borradores y el autoguardado.</div>
+      </section>
+
+      <section class="tut-section" data-tut="faq">
+        <h4>Preguntas frecuentes</h4>
+
+        <h5>¿Funciona sin internet?</h5>
+        <p>Sí. Una vez cargada la página, puedes quedarte sin conexión y seguir trabajando. Los productos del catálogo ya están dentro del archivo.</p>
+
+        <h5>¿Mis datos se suben a algún servidor?</h5>
+        <p>No. Todo pasa dentro de tu navegador. Ni los datos del cliente, ni los presupuestos, ni las fotos salen de tu ordenador.</p>
+
+        <h5>¿Puedo usar esto desde el móvil?</h5>
+        <p>Sí. La página está pensada para el móvil también. Si el texto te queda pequeño, usa el zoom del navegador.</p>
+
+        <h5>La foto no reconoce bien las referencias</h5>
+        <p>Pásasela a una IA (ChatGPT, Gemini, etc.) pidiéndole las referencias Milwaukee, o métela a mano con el buscador. El OCR va bien con texto impreso, pero con letra manuscrita o fotos borrosas se le atraganta.</p>
+
+        <h5>No encuentro una referencia buscando</h5>
+        <p>El buscador de arriba muestra hasta 200 resultados. Si llegas al límite, afina con más palabras (marca + tipo de herramienta). Si aun así no sale, la referencia puede estar fuera de catálogo o con un código distinto.</p>
+
+        <h5>Quiero cambiar el comercial o el IVA</h5>
+        <p>El IVA se edita arriba (por defecto 21%). El comercial viene fijo a Antonio Torres. Si hay que cambiarlo para otro usuario, avisa y lo adaptamos.</p>
+
+        <h5>¿Y si tengo una idea para mejorar?</h5>
+        <p>Apúntala y cuéntala. Esto está pensado para crecer: más comerciales, más marcas, o funciones nuevas. Cuanto más feedback, mejor.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<button class="help-fab no-print" id="helpFab" type="button">
+  <span class="help-bubble">i</span> &iquest;C&oacute;mo funciona?
+</button>
 
 <footer>Hecho para agilizar el día a día &middot; Trabaja sin internet una vez cargado</footer>
 
@@ -680,19 +920,37 @@ function renderBudget() {
   document.getElementById('rowCount').innerHTML = `${lines.length} líneas` + (nf ? ` · <span style="color:#c00">${nf} referencia(s) no encontradas en el catálogo</span>` : '');
 }
 
+// Compute the commercial discount as a € amount, given the current "after gift" base.
+// The user picks either a % of that base, or a fixed € amount. The result is
+// clamped so the discount can never be larger than the amount discountable.
+function computeDiscount(afterGiftBase) {
+  const val = parseFloat(document.getElementById('fDiscVal').value) || 0;
+  const type = document.getElementById('fDiscType').value || 'pct';
+  if (val <= 0 || afterGiftBase <= 0) return 0;
+  let d = type === 'pct' ? afterGiftBase * (val / 100) : val;
+  if (d > afterGiftBase) d = afterGiftBase;
+  return Math.round(d * 100) / 100;
+}
+
 function updateTotals() {
   const sub = lines.reduce((s, l) => s + l.qty * (l.pvp || 0), 0);
   const gift = lines.filter(l => l.gift).reduce((s, l) => s + l.qty * (l.pvp || 0), 0);
-  const base = sub - gift;
+  const afterGift = sub - gift;
+  const disc = computeDiscount(afterGift);
+  const base = afterGift - disc;
   const iva = base * (parseFloat(document.getElementById('fIva').value) || 0) / 100;
   const total = base + iva;
   document.getElementById('tSub').textContent = fmt(sub);
   document.getElementById('tGift').textContent = '-' + fmt(gift);
+  document.getElementById('tDisc').textContent = (disc > 0 ? '-' : '') + fmt(disc);
+  document.getElementById('rDisc').classList.toggle('has-discount', disc > 0);
   document.getElementById('tBase').textContent = fmt(base);
   document.getElementById('tIva').textContent = fmt(iva);
   document.getElementById('tTotal').textContent = fmt(total);
 }
 document.getElementById('fIva').addEventListener('input', updateTotals);
+document.getElementById('fDiscVal').addEventListener('input', updateTotals);
+document.getElementById('fDiscType').addEventListener('change', updateTotals);
 
 // === Autocompletar dirección desde OpenStreetMap (Nominatim) ===
 let nominatimTimer = null;
@@ -1044,9 +1302,21 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
   // - Descriptions are sanitized to strip any stray tabs/newlines that would shift columns.
   const tsvClean = (s) => String(s == null ? '' : s).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
   const esNum = (n) => (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).replace('.', ',');
+
+  // If there's a commercial discount, prorate it across the non-gift lines so each
+  // line's "Importe total venta" (col O) already reflects the actual price charged.
+  // This keeps the Excel Base consistent with what the customer pays — no discount
+  // column needed in the base file.
+  const giftFlag = (l) => !!l.gift;
+  const lineFull = (l) => giftFlag(l) ? 0 : (Number(l.qty) || 0) * (Number(l.pvp) || 0);
+  const sub = lines.reduce((s, l) => s + lineFull(l), 0);
+  const disc = computeDiscount(sub); // sub here = afterGift, because gift lines already yield 0
+  const discFactor = sub > 0 ? (sub - disc) / sub : 1; // e.g. 0.80 when discount is 20%
+
   const rows = lines.map((l) => {
-    const gift = l.gift;
-    const price = gift ? 0 : (Number(l.pvp) || 0);
+    const gift = giftFlag(l);
+    const basePrice = gift ? 0 : (Number(l.pvp) || 0);
+    const price = Math.round(basePrice * discFactor * 100) / 100;
     const total = gift ? 0 : ((Number(l.qty) || 0) * price);
     return [
       fComercial,           // A JSS
@@ -1056,7 +1326,7 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
       tsvClean(l.desc),     // E Descripción (valor del catálogo)
       tsvClean(l.gama),     // F Marca (valor del catálogo)
       l.qty,                // G Cantidad
-      esNum(price),         // H Precio unitario (valor)
+      esNum(price),         // H Precio unitario (valor, ya con descuento prorrateado)
       fCliente,             // I Usuario
       fContacto,            // J Contacto
       '',                   // K A través de quien (manual)
@@ -1073,6 +1343,7 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
   navigator.clipboard.writeText(tsv).then(() => {
     toast(`Copiado (${lines.length} filas) — pega en la primera celda vacía del Excel`, 'ok');
     document.getElementById('copyHint').style.display = 'block';
+    document.getElementById('copyHintDiscNote').style.display = disc > 0 ? 'inline' : 'none';
   }, () => {
     toast('No pude copiar — usa Ctrl+C manualmente', 'err');
   });
@@ -1106,11 +1377,19 @@ document.getElementById('btnExcel').addEventListener('click', () => {
     if (l.gift) gift += l.qty * (l.pvp || 0);
     data.push([l.ref, l.desc, l.gama, l.qty, l.pvp || 0, l.gift ? 'SÍ' : '', t]);
   });
-  const base = sub - gift;
+  const afterGift = sub - gift;
+  const disc = computeDiscount(afterGift);
+  const base = afterGift - disc;
   const iva = base * ivaPct / 100;
+  const discType = document.getElementById('fDiscType').value || 'pct';
+  const discRaw = parseFloat(document.getElementById('fDiscVal').value) || 0;
+  const discLabel = disc > 0
+    ? (discType === 'pct' ? `Dto. comercial (${discRaw}%)` : 'Dto. comercial')
+    : 'Dto. comercial';
   data.push([]);
   data.push(['', '', '', '', '', 'Subtotal', sub]);
   data.push(['', '', '', '', '', 'Dto. regalos', -gift]);
+  if (disc > 0) data.push(['', '', '', '', '', discLabel, -disc]);
   data.push(['', '', '', '', '', 'Base imp.', base]);
   data.push(['', '', '', '', '', `IVA ${ivaPct}%`, iva]);
   data.push(['', '', '', '', '', 'TOTAL', base + iva]);
@@ -1119,14 +1398,15 @@ document.getElementById('btnExcel').addEventListener('click', () => {
   ws['!cols'] = [{wch: 14}, {wch: 40}, {wch: 10}, {wch: 10}, {wch: 12}, {wch: 10}, {wch: 14}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Presupuesto');
-  XLSX.writeFile(wb, `Presupuesto_${fNumero}_${fClienteV.replace(/\s+/g, '_')}.xlsx`);
+  const fileName = safeFilename(buildDefaultName()) + '.xlsx';
+  XLSX.writeFile(wb, fileName);
   toast('Excel descargado', 'ok');
 });
 
 // === Print ===
 document.getElementById('btnPrint').addEventListener('click', () => {
   const fClienteV = document.getElementById('fCliente').value || '—';
-  const fNumero = document.getElementById('fNumero').value || '—';
+  const fNumero = document.getElementById('fNumero').value || '';
   const fFecha = document.getElementById('fFecha').value || '';
   const fechaES = fFecha ? fFecha.split('-').reverse().join('/') : '—';
   const fComercialV = document.getElementById('fComercial').value || '—';
@@ -1134,18 +1414,23 @@ document.getElementById('btnPrint').addEventListener('click', () => {
   const fDireccionV = document.getElementById('fDireccion').value || '';
   const fPoblacionV = document.getElementById('fPoblacion').value || '';
   const fTelefonoV = document.getElementById('fTelefono').value || '';
-  document.getElementById('printTitle').textContent = 'PRESUPUESTO ' + fNumero;
+  document.getElementById('printTitle').textContent = 'PRESUPUESTO' + (fNumero ? ' ' + fNumero : '');
   const addrBits = [fDireccionV, fPoblacionV].filter(Boolean).join(' · ');
   document.getElementById('printMeta').innerHTML = `
     <b>Cliente:</b> ${escapeHtml(fClienteV)}${addrBits ? '<br><b>Dirección:</b> ' + escapeHtml(addrBits) : ''}${fTelefonoV ? ' · <b>Tel.:</b> ' + escapeHtml(fTelefonoV) : ''}${fContactoV ? '<br><b>Contacto:</b> ' + escapeHtml(fContactoV) : ''}<br>
     <b>Fecha:</b> ${fechaES} &middot; <b>Comercial:</b> ${escapeHtml(fComercialV)}
   `;
+  // Temporarily set document.title so "Save as PDF" proposes a nice filename
+  const originalTitle = document.title;
+  document.title = safeFilename(buildDefaultName());
   window.print();
+  // Restore once print dialog closes. setTimeout ensures the dialog has already picked up the title.
+  setTimeout(() => { document.title = originalTitle; }, 1500);
 });
 
 // === Reset ===
 document.getElementById('btnReset').addEventListener('click', () => {
-  if (!confirm('¿Seguro que quieres empezar de nuevo? Se perderán las líneas actuales.')) return;
+  if (!confirm('Se va a reiniciar el presupuesto.\n\n• Si ya has guardado el borrador: tranquilo, no pasa nada, lo tienes en "Mis borradores".\n• Si NO lo has guardado: se perderán las líneas actuales.\n\n¿Seguimos?')) return;
   lines = [];
   document.getElementById('presupuestoStep').style.display = 'none';
   document.getElementById('textInput').value = '';
@@ -1153,6 +1438,9 @@ document.getElementById('btnReset').addEventListener('click', () => {
   document.getElementById('ocrPreview').style.display = 'none';
   document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.mode-content').forEach(c => c.classList.remove('visible'));
+  // Reset commercial discount inputs so a reused browser session starts clean.
+  document.getElementById('fDiscVal').value = 0;
+  document.getElementById('fDiscType').value = 'pct';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
@@ -1182,14 +1470,16 @@ function getClientState() {
     contacto: document.getElementById('fContacto').value,
     numero: document.getElementById('fNumero').value,
     fecha: document.getElementById('fFecha').value,
-    iva: document.getElementById('fIva').value
+    iva: document.getElementById('fIva').value,
+    discVal: document.getElementById('fDiscVal').value,
+    discType: document.getElementById('fDiscType').value
   };
 }
 function setClientState(s) {
   if (!s) return;
   const map = { fCliente:'cliente', fDireccion:'direccion', fPoblacion:'poblacion',
     fTelefono:'telefono', fContacto:'contacto', fNumero:'numero',
-    fFecha:'fecha', fIva:'iva' };
+    fFecha:'fecha', fIva:'iva', fDiscVal:'discVal', fDiscType:'discType' };
   Object.entries(map).forEach(([id,key]) => {
     const el = document.getElementById(id);
     if (el && s[key] !== undefined && s[key] !== null) el.value = s[key];
@@ -1226,10 +1516,12 @@ renderBudget = function() {
   scheduleAutosave();
   updateDraftsCount();
 };
-['fCliente','fDireccion','fPoblacion','fTelefono','fContacto','fNumero','fFecha','fIva','fStartRow'].forEach(id => {
+['fCliente','fDireccion','fPoblacion','fTelefono','fContacto','fNumero','fFecha','fIva','fStartRow','fDiscVal'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('input', scheduleAutosave);
 });
+const _fDiscTypeEl = document.getElementById('fDiscType');
+if (_fDiscTypeEl) _fDiscTypeEl.addEventListener('change', scheduleAutosave);
 
 // Recovery banner on load
 function tryShowRecoveryBanner() {
@@ -1312,12 +1604,31 @@ function updateDraftsCount() {
   else { badge.style.display = 'none'; }
 }
 
+// Default name builder — used by save draft, Excel download and PDF print.
+// Format: "Presupuesto [Cliente]" if client is filled, otherwise "Presupuesto [dd-mm-yyyy]".
+function buildDefaultName() {
+  const cliente = (document.getElementById('fCliente').value || '').trim();
+  if (cliente) return 'Presupuesto ' + cliente;
+  const f = document.getElementById('fFecha').value;
+  let fechaTxt;
+  if (f) {
+    fechaTxt = f.split('-').reverse().join('-'); // dd-mm-yyyy
+  } else {
+    const d = new Date();
+    fechaTxt = String(d.getDate()).padStart(2,'0') + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + d.getFullYear();
+  }
+  return 'Presupuesto ' + fechaTxt;
+}
+// Sanitize for use as a filename (remove chars Windows/macOS/Linux dislike)
+function safeFilename(s) {
+  return String(s || '').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim();
+}
+
 // Save draft button
 document.getElementById('btnSaveDraft').addEventListener('click', () => {
   if (!lines || !lines.length) { toast('El presupuesto está vacío', 'err'); return; }
-  const defaultName = document.getElementById('fCliente').value.trim() ||
-    ('Presupuesto ' + new Date().toLocaleDateString('es-ES'));
-  const name = prompt('Ponle un nombre al borrador:', defaultName);
+  const defaultName = buildDefaultName();
+  const name = prompt('Nombre del borrador:', defaultName);
   if (name === null) return;
   const trimmed = (name || defaultName).trim();
   if (!trimmed) return;
@@ -1363,6 +1674,28 @@ document.getElementById('btnDrafts').addEventListener('click', () => {
 });
 document.getElementById('draftsClose').addEventListener('click', () => draftsModal.classList.remove('open'));
 draftsModal.addEventListener('click', (e) => { if (e.target === draftsModal) draftsModal.classList.remove('open'); });
+
+// Tutorial modal
+const tutorialModal = document.getElementById('tutorialModal');
+const tutNavBtns = tutorialModal.querySelectorAll('.tut-nav button');
+const tutSections = tutorialModal.querySelectorAll('.tut-section');
+function showTutSection(key) {
+  tutNavBtns.forEach(b => b.classList.toggle('active', b.dataset.tut === key));
+  tutSections.forEach(s => s.classList.toggle('active', s.dataset.tut === key));
+  // reset scroll to top of body when changing tab
+  const body = tutorialModal.querySelector('.modal-body');
+  if (body) body.scrollTop = 0;
+}
+tutNavBtns.forEach(b => b.addEventListener('click', () => showTutSection(b.dataset.tut)));
+document.getElementById('helpFab').addEventListener('click', () => {
+  showTutSection('intro');
+  tutorialModal.classList.add('open');
+});
+document.getElementById('tutorialClose').addEventListener('click', () => tutorialModal.classList.remove('open'));
+tutorialModal.addEventListener('click', (e) => { if (e.target === tutorialModal) tutorialModal.classList.remove('open'); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && tutorialModal.classList.contains('open')) tutorialModal.classList.remove('open');
+});
 
 // Extend btnReset to clear autosave (only if the reset actually happened —
 // previous handler may bail if the user cancels the confirm prompt).
