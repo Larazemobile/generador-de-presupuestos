@@ -208,10 +208,9 @@
     .warning { font-size: 12px; padding: 9px 12px; }
   }
   /* Help FAB (bottom-right floating button) */
-  .help-fab { position: fixed; bottom: 22px; right: 22px; z-index: 900; background: #000; color: #fff; border: 0; border-radius: 999px; padding: 12px 20px 12px 16px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
-  .help-fab:hover { background: #db011c; }
-  .help-fab .help-bubble { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #db011c; color: #fff; font-family: serif; font-style: italic; font-weight: 700; font-size: 16px; }
-  .help-fab:hover .help-bubble { background: #000; }
+  .help-fab { position: fixed; bottom: 18px; right: 18px; z-index: 900; background: #000; color: #fff; border: 0; border-radius: 50%; width: 34px; height: 34px; padding: 0; font-family: serif; font-style: italic; font-weight: 700; font-size: 17px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.18); display: inline-flex; align-items: center; justify-content: center; opacity: 0.55; transition: opacity .15s ease, background .15s ease, transform .15s ease; }
+  .help-fab:hover { background: #db011c; opacity: 1; transform: scale(1.06); }
+  .help-fab .help-bubble { display: none; }
   @media (max-width: 640px) {
     .help-fab { bottom: 14px; right: 14px; padding: 10px 14px 10px 12px; font-size: 13px; }
   }
@@ -551,6 +550,7 @@
             <li><span class="step-num">3</span> Revisa la tabla y ajusta cantidades, regalos o precios si hace falta.</li>
             <li><span class="step-num">4</span> Usa los botones debajo de la tabla: <b>Guardar borrador</b>, <b>Pegar en el Excel Base</b>, <b>Descargar Excel</b> o <b>PDF / Imprimir</b>.</li>
           </ol>
+          <div class="tip"><b>¿Ya tienes presupuestos guardados?</b> Te aparecen en la lista <b>«Mis presupuestos guardados»</b> nada más abrir la web, sin tener que empezar uno nuevo. Desde ahí los abres, los copias al Excel Base en lote, o los exportas para pasárselos a otro aparato.</div>
           <div class="tip"><b>No necesitas internet</b> una vez cargada la página: puedes cerrar la pestaña, volver, y el trabajo sigue ahí. Todo se queda en <i>tu</i> navegador, no se sube a ningún sitio.</div>
         </section>
 
@@ -591,6 +591,14 @@
             <li><b>Precio unitario (PVP)</b>: si has pactado un precio distinto <i>solo en esa línea</i>, edítalo en la casilla. El total se recalcula al momento.</li>
             <li><b>Eliminar</b>: la papelera borra la línea.</li>
           </ul>
+          <h5>Cambiar o añadir la imagen de un producto</h5>
+          <p>En la primera columna de cada línea aparece la foto del catálogo (si hay). Si no te gusta o está mal:</p>
+          <ul>
+            <li>Pasa el ratón por encima y verás una <b>X</b> en la esquina para quitarla.</li>
+            <li>Al quitarla aparece un cuadrito con un icono de <b>cámara 📷</b>. Clícalo y te abre el selector de archivos para <b>subir una imagen tuya</b> (una foto, una captura de pantalla, lo que quieras).</li>
+            <li>Las líneas que <b>no tienen</b> foto en el catálogo también muestran ese icono, así puedes adjuntar una si te conviene.</li>
+            <li>La imagen viaja con el borrador: si lo exportas y otro compañero lo importa, la imagen va con él. Y también aparece al imprimir a PDF.</li>
+          </ul>
           <h5>Totales</h5>
           <p>Debajo de la tabla ves: Subtotal, Descuento por regalos, Descuento comercial (si lo hay), Base imponible, IVA (editable arriba, por defecto 21%) y <b>Total</b>.</p>
           <div class="tip">¿Descuento global sobre todo el presupuesto? Mira la pestaña <b>&laquo;Descuento comercial&raquo;</b>, hay una casilla dedicada para eso.</div>
@@ -625,9 +633,9 @@
           <p>El botón <b>Guardar borrador</b> aparca el presupuesto con nombre para recuperarlo cuando quieras.</p>
           <ul>
             <li>Te propone el nombre <code>Presupuesto [Cliente]</code>, pero puedes cambiarlo.</li>
-            <li>Para abrir uno guardado, clica <b>Mis borradores</b> y elige el que quieras.</li>
-            <li>Desde ahí también puedes borrar los que ya no necesites (icono papelera).</li>
-            <li>Los borradores viven en <b>este navegador</b>. Si usas otro ordenador, no los ves allí.</li>
+            <li>En cuanto lo guardas, aparece en la lista <b>«Mis presupuestos guardados»</b> de la primera página. No hace falta abrir ningún menú.</li>
+            <li>Desde esa lista abres uno con el botón <b>Abrir</b> o lo borras con la papelera.</li>
+            <li>Los borradores viven en <b>este navegador</b>. Si usas otro ordenador no los ves allí — para pasarlos usa la exportación (abajo).</li>
           </ul>
 
           <h5><span class="step-num">2</span> Autoguardado (automático)</h5>
@@ -640,10 +648,20 @@
           <h5><span class="step-num">3</span> Empezar de nuevo sin perder nada</h5>
           <p>Cuando pulsas <b>Empezar de nuevo</b> te aparece un aviso con las dos opciones claras:</p>
           <ul>
-            <li>Si ya has <b>guardado el borrador</b>: tranquilo, lo tienes en &laquo;Mis borradores&raquo; y no se pierde nada. Dale a OK.</li>
+            <li>Si ya has <b>guardado el borrador</b>: tranquilo, lo tienes en la lista y no se pierde nada. Dale a OK.</li>
             <li>Si <b>no</b> lo has guardado: perderás las líneas actuales. Guarda borrador antes si no quieres perderlo.</li>
+            <li>Ojo: «Empezar de nuevo» <b>también limpia los datos del cliente</b> (nombre, dirección, teléfono, etc.), para arrancar con la hoja totalmente en blanco.</li>
           </ul>
-          <div class="warn">Esto no es una nube. Si limpias el historial o los datos del navegador, se borran también los borradores y el autoguardado. Para una copia &laquo;de verdad&raquo;, descarga el Excel o el PDF.</div>
+
+          <h5><span class="step-num">4</span> Compartir borradores entre móvil y portátil</h5>
+          <p>Como los borradores viven en cada navegador, el móvil no ve los del portátil ni al revés. Para pasarlos tienes <b>Exportar</b> e <b>Importar</b> en la barra de «Mis presupuestos guardados»:</p>
+          <ol>
+            <li><b>En el aparato que tiene los borradores</b>: marca con los checkboxes los que quieras (o usa <b>«Seleccionar todo»</b>), clica <b>«Exportar seleccionados»</b> y se descarga un archivo <code>.json</code>.</li>
+            <li>Mándalo por WhatsApp, correo, AirDrop, lo que uses.</li>
+            <li><b>En el otro aparato</b>: abre la web, clica <b>«Importar»</b> y elige el archivo. Los borradores aparecen en la lista como si los hubieras guardado ahí.</li>
+          </ol>
+          <div class="tip">Si importas dos veces el mismo archivo, no se duplica nada. Los que ya tenías con el mismo nombre y fecha se saltan.</div>
+          <div class="warn">Esto no es una nube. Si limpias el historial o los datos del navegador, se borran también los borradores y el autoguardado. Para una copia &laquo;de verdad&raquo;, exporta el <code>.json</code>, descarga el Excel o el PDF.</div>
         </section>
 
         <section class="tut-section" data-tut="excel">
@@ -658,6 +676,15 @@
           <div class="tip">Se pegan <b>valores en limpio</b>, sin fórmulas. Así no mareamos a tu Excel ni se rompe nada. Los precios van con coma decimal (1.234,56) como en Excel en español.</div>
           <div class="warn"><b>El descuento comercial NO se incluye en el Excel Base</b>. Cada línea se pega con el PVP de catálogo, que es lo que el Excel de ventas espera. El descuento solo aparece en el PDF y en el Excel descargado del presupuesto.</div>
           <div class="warn">Si te da error al pegar: asegúrate de estar en la fila correcta y de que Excel está en <b>idioma español</b> (el separador decimal debe ser la coma). Si usas Excel en inglés, avisa y lo adaptamos.</div>
+
+          <h5>Pegar varios presupuestos de golpe</h5>
+          <p>Si tienes varios borradores guardados y quieres pasarlos todos al Excel Base sin abrirlos uno a uno:</p>
+          <ol>
+            <li><span class="step-num">1</span> En la lista <b>«Mis presupuestos guardados»</b> de la primera página, marca con los checkboxes los borradores que quieras (uno, varios, o usa <b>«Seleccionar todo»</b>).</li>
+            <li><span class="step-num">2</span> Clica <b>«Copiar al Excel Base»</b>.</li>
+            <li><span class="step-num">3</span> Abre el Excel, ponte en la primera celda vacía de la columna A y pega con <kbd>Ctrl</kbd>+<kbd>V</kbd>.</li>
+          </ol>
+          <p>Se pegan las filas de todos los presupuestos seleccionados de una vez, y cada fila lleva el <b>cliente, la fecha y el contacto que tenía guardados ese presupuesto</b>, no se mezclan.</p>
         </section>
 
         <section class="tut-section" data-tut="export">
@@ -686,6 +713,15 @@
           <h5>¿Puedo usar esto desde el móvil?</h5>
           <p>Sí. La página está pensada para el móvil también. Si el texto te queda pequeño, usa el zoom del navegador.</p>
 
+          <h5>¿Cómo comparto los borradores entre el móvil y el portátil?</h5>
+          <p>En la lista <b>«Mis presupuestos guardados»</b>, marca los que quieras, clica <b>«Exportar seleccionados»</b>, y te descarga un archivo <code>.json</code>. Mándalo por WhatsApp, correo o AirDrop al otro aparato, abre la web allí y clica <b>«Importar»</b>. Se añaden a la lista sin duplicar los que ya tenías.</p>
+
+          <h5>¿Puedo pasar varios presupuestos al Excel Base a la vez?</h5>
+          <p>Sí. En la lista <b>«Mis presupuestos guardados»</b> marca los que quieras con los checkboxes y clica <b>«Copiar al Excel Base»</b>. Se copian todas las filas de todos los presupuestos seleccionados de golpe y las pegas en el Excel con un solo Ctrl+V.</p>
+
+          <h5>¿Puedo poner mi propia imagen en una línea?</h5>
+          <p>Sí. En la columna de foto pulsa la <b>X</b> para quitar la del catálogo (si la tiene) y aparecerá un icono de <b>cámara 📷</b>. Clícalo para subir una foto o captura tuya. Se guarda con el borrador y sale también al imprimir a PDF.</p>
+
           <h5>La foto no reconoce bien las referencias</h5>
           <p>Pásasela a una IA (ChatGPT, Gemini, etc.) pidiéndole las referencias Milwaukee, o métela a mano con el buscador. El OCR va bien con texto impreso, pero con letra manuscrita o fotos borrosas se le atraganta.</p>
 
@@ -703,9 +739,7 @@
   </div>
 </div>
 
-<button class="help-fab no-print" id="helpFab" type="button">
-  <span class="help-bubble">i</span> &iquest;C&oacute;mo funciona?
-</button>
+<button class="help-fab no-print" id="helpFab" type="button" title="¿Cómo funciona?" aria-label="¿Cómo funciona?">i</button>
 
 <footer>Hecho para agilizar el día a día &middot; Trabaja sin internet una vez cargado</footer>
 
