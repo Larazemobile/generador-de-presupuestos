@@ -118,6 +118,9 @@
   table.budget tr:hover .ref-photo .foto-x,
   table.budget .ref-photo:hover .foto-x { opacity: 1; }
   table.budget .ref-photo .foto-x:hover { background: #db011c; color: #fff; border-color: #db011c; }
+  table.budget .photo-empty { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px dashed #ccc; border-radius: 4px; background: #fafafa; cursor: pointer; color: #888; vertical-align: middle; }
+  table.budget .photo-empty:hover { border-color: #db011c; background: #fff; color: #db011c; }
+  table.budget .photo-empty .foto-upload { background: none; border: 0; padding: 0; font-size: 16px; cursor: pointer; color: inherit; line-height: 1; }
   table.budget th.col-photo, table.budget td.col-photo { width: 44px; text-align: center; padding: 4px 2px; }
   .client-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .client-grid label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #333; }
@@ -726,11 +729,74 @@ function fotoHtml(ref, alt) {
   const a = alt ? String(alt).replace(/"/g,'&quot;') : '';
   return '<img src="' + fotoUrl(ref) + '" alt="' + a + '" loading="lazy">';
 }
-// Budget-line photo cell with a tiny remove-X.  Empty string when no photo or user hid it.
+// Budget-line photo cell. Three states:
+//   1) Custom photo uploaded by the user  → show it + X (removes the custom one)
+//   2) Catalog photo visible              → show it + X (hides the catalog one)
+//   3) No photo / user hid the catalog    → small uploader so they can attach one
 function budgetPhotoCell(line, idx) {
-  if (line.noFoto || !hasFoto(line.ref)) return '';
-  return '<span class="ref-photo"><img src="' + fotoUrl(line.ref) + '" alt="" loading="lazy">' +
-         '<button type="button" class="foto-x no-print" data-i="' + idx + '" title="Quitar foto">×</button></span>';
+  if (line.customPhoto) {
+    return '<span class="ref-photo"><img src="' + line.customPhoto + '" alt="" loading="lazy">' +
+           '<button type="button" class="foto-x no-print" data-i="' + idx + '" data-mode="custom" title="Quitar imagen">×</button></span>';
+  }
+  if (!line.noFoto && hasFoto(line.ref)) {
+    return '<span class="ref-photo"><img src="' + fotoUrl(line.ref) + '" alt="" loading="lazy">' +
+           '<button type="button" class="foto-x no-print" data-i="' + idx + '" data-mode="catalog" title="Quitar foto">×</button></span>';
+  }
+  return '<span class="photo-empty no-print" title="Añadir imagen (foto, captura...)">' +
+         '<button type="button" class="foto-upload" data-i="' + idx + '">&#128247;</button></span>';
+}
+
+// Compress an uploaded image to a small JPEG data URL so it fits in
+// localStorage (drafts) without blowing the quota. 360x360 max @ ~0.82
+// is plenty for the 34x34 thumb and still decent if the budget is
+// printed / saved to PDF.
+function compressImageToDataUrl(file, maxW, maxH, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        const ratio = Math.min(maxW / w, maxH / h, 1);
+        w = Math.max(1, Math.round(w * ratio));
+        h = Math.max(1, Math.round(h * ratio));
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        try { resolve(canvas.toDataURL('image/jpeg', quality)); }
+        catch (e) { reject(e); }
+      };
+      img.onerror = () => reject(new Error('Imagen no válida'));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Open a hidden file picker and attach the chosen image to a budget line.
+function triggerCustomPhotoUpload(lineIdx) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+  input.addEventListener('change', () => {
+    const f = input.files && input.files[0];
+    document.body.removeChild(input);
+    if (!f) return;
+    compressImageToDataUrl(f, 360, 360, 0.82).then(dataUrl => {
+      if (!lines[lineIdx]) return;
+      lines[lineIdx].customPhoto = dataUrl;
+      // If the catalog photo was hidden, clear that flag so the line
+      // now shows the new image cleanly instead of an overlay of both.
+      delete lines[lineIdx].noFoto;
+      renderBudget();
+      scheduleAutosave && scheduleAutosave();
+    }).catch(() => toast('No se pudo cargar la imagen', 'err'));
+  });
+  input.click();
 }
 
 let lines = []; // {ref, qty, gift, notFound}
@@ -992,7 +1058,16 @@ function renderBudget() {
     e.preventDefault();
     e.stopPropagation();
     const i = +e.currentTarget.dataset.i;
-    if (lines[i]) { lines[i].noFoto = true; renderBudget(); }
+    const mode = e.currentTarget.dataset.mode;
+    if (!lines[i]) return;
+    if (mode === 'custom') { delete lines[i].customPhoto; }
+    else { lines[i].noFoto = true; }
+    renderBudget();
+  }));
+  document.querySelectorAll('.foto-upload').forEach(b => b.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    triggerCustomPhotoUpload(+e.currentTarget.dataset.i);
   }));
   updateTotals();
   const nf = lines.filter(l => l.notFound).length;
@@ -1712,7 +1787,7 @@ function renderDraftsInline() {
   // fresh device where someone else just shared a .json.
   section.style.display = 'block';
   if (!drafts.length) {
-    body.innerHTML = '<p style="text-align:center; color:#888; padding:18px 10px; border:1px dashed #ddd; border-radius:6px;">No tienes presupuestos guardados todavía.<br>Si alguien te ha pasado un archivo <code>.json</code>, pulsa <b>Importar</b> arriba a la derecha.</p>';
+    body.innerHTML = '<p style="text-align:center; color:#888; padding:18px 10px; border:1px dashed #ddd; border-radius:6px;">No tienes presupuestos guardados todavía.<br>Si tienes un archivo <code>.json</code>, pulsa <b>Importar</b> arriba a la derecha.</p>';
     updateDraftSelectionState();
     return;
   }
