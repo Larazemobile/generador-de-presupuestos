@@ -119,12 +119,12 @@
   .totals .disc-row.has-discount { color: #b8860b; font-weight: 600; }
   .totals .disc-row.has-discount #tDisc { color: #b8860b; }
   .totals .disc-row:not(.has-discount) #tDisc { color: #888; }
-  .totals .disc-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; padding: 6px 8px; background: #eef2f7; border-radius: 4px; }
-  .totals .disc-controls .disc-mini-label { font-size: 11px; color: #555; font-weight: 500; flex: 1 1 100%; text-transform: uppercase; letter-spacing: 0.3px; }
-  .totals .disc-controls input#fDiscVal { flex: 1 1 auto; min-width: 70px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; -moz-appearance: textfield; box-sizing: border-box; }
+  .totals .disc-controls { display: flex; align-items: center; gap: 6px; margin: 2px 0 6px; padding: 4px 6px; background: #eef2f7; border-radius: 4px; font-size: 11px; }
+  .totals .disc-controls .disc-mini-label { color: #555; font-weight: 500; flex: 1 1 auto; text-transform: uppercase; letter-spacing: 0.3px; }
+  .totals .disc-controls input#fDiscVal { width: 56px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; -moz-appearance: textfield; box-sizing: border-box; text-align: right; }
   .totals .disc-controls input#fDiscVal::-webkit-outer-spin-button,
   .totals .disc-controls input#fDiscVal::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .totals .disc-controls select#fDiscType { padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; background: #fff; }
+  .totals .disc-controls select#fDiscType { padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; background: #fff; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 12px 20px; border-radius: 6px; font-weight: 600; z-index: 1000; opacity: 0; transition: opacity .2s; }
   .toast.show { opacity: 1; }
   .toast.ok { background: #0a7c2f; }
@@ -234,11 +234,13 @@
   /* ============= END RESPONSIVE ============= */
 
   @media print {
-    @page { margin: 18mm 16mm 20mm 16mm; }
+    /* Use @page margin of 0 and apply REAL content padding below.
+       This way the margins survive even if the user picks "Margins: None" in the print dialog. */
+    @page { margin: 0; size: A4; }
     header, .step:not(#presupuestoStep), .actions, .no-print, .mode-card, button, .manual-add, #addRef, footer { display: none !important; }
-    body { background: #fff; }
+    html, body { background: #fff; margin: 0; }
     .step { box-shadow: none; border: 0; padding: 0; }
-    main { max-width: none; padding: 0; }
+    main { max-width: none; padding: 16mm 14mm 18mm 14mm; box-sizing: border-box; }
     .print-only { display: block !important; }
     /* Hide the "2 · Presupuesto" heading and the row count in print */
     #presupuestoStep > h2,
