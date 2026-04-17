@@ -116,15 +116,15 @@
   .totals { margin-top: 16px; background: #fafafa; border: 1px solid #e0e0e0; padding: 14px 18px; border-radius: 6px; margin-left: auto; width: 340px; }
   .totals .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; }
   .totals .row.grand { font-size: 18px; font-weight: 700; border-top: 2px solid #000; padding-top: 8px; margin-top: 8px; color: #db011c; }
-  .totals .disc-row .disc-label { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .totals .disc-row .disc-controls { display: inline-flex; align-items: center; gap: 4px; }
-  .totals .disc-row input#fDiscVal { width: 70px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; -moz-appearance: textfield; }
-  .totals .disc-row input#fDiscVal::-webkit-outer-spin-button,
-  .totals .disc-row input#fDiscVal::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .totals .disc-row select#fDiscType { padding: 3px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; background: #fff; }
   .totals .disc-row.has-discount { color: #b8860b; font-weight: 600; }
   .totals .disc-row.has-discount #tDisc { color: #b8860b; }
   .totals .disc-row:not(.has-discount) #tDisc { color: #888; }
+  .totals .disc-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; padding: 6px 8px; background: #eef2f7; border-radius: 4px; }
+  .totals .disc-controls .disc-mini-label { font-size: 11px; color: #555; font-weight: 500; flex: 1 1 100%; text-transform: uppercase; letter-spacing: 0.3px; }
+  .totals .disc-controls input#fDiscVal { flex: 1 1 auto; min-width: 70px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; -moz-appearance: textfield; box-sizing: border-box; }
+  .totals .disc-controls input#fDiscVal::-webkit-outer-spin-button,
+  .totals .disc-controls input#fDiscVal::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .totals .disc-controls select#fDiscType { padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; background: #fff; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 12px 20px; border-radius: 6px; font-weight: 600; z-index: 1000; opacity: 0; transition: opacity .2s; }
   .toast.show { opacity: 1; }
   .toast.ok { background: #0a7c2f; }
@@ -204,13 +204,15 @@
     .help-fab { bottom: 14px; right: 14px; padding: 10px 14px 10px 12px; font-size: 13px; }
   }
   /* Tutorial modal */
-  .tutorial-modal .modal-box { max-width: 760px; }
-  .tutorial-modal .modal-body { padding: 0; }
-  .tut-nav { display: flex; gap: 4px; padding: 10px 14px; background: #f5f5f5; border-bottom: 1px solid #e0e0e0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tut-nav button { background: transparent; color: #333; border: 0; padding: 8px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; border-radius: 4px; cursor: pointer; letter-spacing: 0; }
+  .tutorial-modal .modal-box { max-width: 900px; }
+  .tutorial-modal .modal-body { padding: 0; display: flex; flex: 1; min-height: 0; overflow: hidden; }
+  .tut-nav { flex: 0 0 210px; display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; background: #f7f7f7; border-right: 1px solid #e0e0e0; overflow-y: auto; }
+  .tut-nav button { text-align: left; background: transparent; color: #333; border: 0; padding: 10px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; line-height: 1.3; white-space: normal; display: flex; align-items: center; gap: 10px; }
+  .tut-nav button .tn-icon { font-size: 16px; flex-shrink: 0; }
   .tut-nav button:hover { background: #fff; }
   .tut-nav button.active { background: #db011c; color: #fff; }
-  .tut-section { padding: 20px 24px 24px; display: none; line-height: 1.6; color: #1a1a1a; font-size: 14px; }
+  .tut-content { flex: 1; overflow-y: auto; min-width: 0; }
+  .tut-section { padding: 22px 26px 26px; display: none; line-height: 1.6; color: #1a1a1a; font-size: 14px; }
   .tut-section.active { display: block; }
   .tut-section h4 { font-size: 17px; margin-bottom: 10px; color: #000; border-left: 3px solid #db011c; padding-left: 10px; }
   .tut-section h5 { font-size: 14px; font-weight: 700; margin-top: 14px; margin-bottom: 4px; color: #000; }
@@ -221,10 +223,13 @@
   .tut-section .warn { background: #ffe3e3; border-left: 3px solid #c00; padding: 10px 12px; border-radius: 4px; font-size: 13px; color: #800; margin: 10px 0; }
   .tut-section code, .tut-section kbd { background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-family: 'Menlo', monospace; font-size: 12px; color: #000; }
   .tut-section .step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #db011c; color: #fff; font-weight: 700; font-size: 12px; margin-right: 8px; vertical-align: middle; }
-  @media (max-width: 640px) {
+  @media (max-width: 720px) {
+    .tutorial-modal .modal-body { flex-direction: column; }
+    .tut-nav { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid #e0e0e0; padding: 8px 10px; gap: 4px; max-height: 140px; }
+    .tut-nav button { flex: 0 1 auto; font-size: 12px; padding: 6px 10px; }
+    .tut-nav button .tn-icon { font-size: 14px; }
+    .tut-content { flex: 1 1 auto; min-height: 200px; }
     .tut-section { padding: 14px 14px 18px; font-size: 13px; }
-    .tut-nav { padding: 8px 10px; }
-    .tut-nav button { font-size: 12px; padding: 6px 10px; }
   }
   /* ============= END RESPONSIVE ============= */
 
@@ -430,21 +435,20 @@
     <div class="totals">
       <div class="row"><span>Subtotal</span><span id="tSub">0,00 €</span></div>
       <div class="row" id="rGift"><span>Descuento por regalos</span><span id="tGift">0,00 €</span></div>
-      <div class="row disc-row" id="rDisc">
-        <span class="disc-label">
-          <span class="disc-label-text">Descuento comercial</span>
-          <span class="disc-controls no-print">
-            <input id="fDiscVal" type="number" min="0" step="0.01" value="0" title="Descuento" aria-label="Descuento comercial">
-            <select id="fDiscType" title="Tipo de descuento" aria-label="Tipo de descuento">
-              <option value="pct">%</option>
-              <option value="eur">€</option>
-            </select>
-          </span>
-        </span>
-        <span id="tDisc">0,00 €</span>
-      </div>
       <div class="row"><span>Base imponible</span><span id="tBase">0,00 €</span></div>
       <div class="row"><span>IVA</span><span id="tIva">0,00 €</span></div>
+      <div class="row disc-row" id="rDisc">
+        <span>Descuento comercial</span>
+        <span id="tDisc">0,00 €</span>
+      </div>
+      <div class="disc-controls no-print" id="rDiscControls">
+        <span class="disc-mini-label">Aplicar descuento sobre el total:</span>
+        <input id="fDiscVal" type="number" min="0" step="0.01" value="0" title="Descuento" aria-label="Descuento comercial">
+        <select id="fDiscType" title="Tipo de descuento" aria-label="Tipo de descuento">
+          <option value="pct">%</option>
+          <option value="eur">€</option>
+        </select>
+      </div>
       <div class="row grand"><span>TOTAL</span><span id="tTotal">0,00 €</span></div>
     </div>
 
@@ -460,7 +464,7 @@
 
     <div class="warning no-print" id="copyHint" style="display: none; margin-top: 14px;">
       <b>Ya tienes las filas copiadas.</b> Abre el Excel "Base", haz clic en la <b>primera celda vacía de la columna A</b> y pulsa <b>Ctrl+V</b>. Se rellenan las 17 columnas con los datos ya completos (referencia, descripción, marca, precio y total) — no hay fórmulas, así que no se puede romper nada al pegar.
-      <span id="copyHintDiscNote" style="display:none;"><br><b>Descuento comercial:</b> se reparte proporcionalmente entre las líneas, así el precio unitario de cada fila ya es el que se cobra al cliente.</span>
+      <span id="copyHintDiscNote" style="display:none;"><br><b>Aviso:</b> el <b>descuento comercial</b> no se incluye en el Excel base. Cada línea se pega con el PVP de catálogo, que es lo que el Excel de ventas espera.</span>
     </div>
   </section>
 
@@ -490,158 +494,178 @@
       <button class="modal-close" id="tutorialClose">&times;</button>
     </div>
     <div class="modal-body">
-      <div class="tut-nav" role="tablist">
-        <button type="button" class="active" data-tut="intro">Empezar</button>
-        <button type="button" data-tut="add">Añadir productos</button>
-        <button type="button" data-tut="adjust">Ajustar líneas</button>
-        <button type="button" data-tut="save">Guardar borrador</button>
-        <button type="button" data-tut="excel">Pegar en tu Excel</button>
-        <button type="button" data-tut="export">Descargar e imprimir</button>
-        <button type="button" data-tut="recover">Recuperar trabajo</button>
-        <button type="button" data-tut="faq">Preguntas</button>
+      <nav class="tut-nav" role="tablist">
+        <button type="button" class="active" data-tut="intro"><span class="tn-icon">&#128640;</span> Empezar</button>
+        <button type="button" data-tut="add"><span class="tn-icon">&#10133;</span> A&ntilde;adir productos</button>
+        <button type="button" data-tut="adjust"><span class="tn-icon">&#9999;&#65039;</span> Ajustar l&iacute;neas</button>
+        <button type="button" data-tut="discount"><span class="tn-icon">&#128176;</span> Descuento comercial</button>
+        <button type="button" data-tut="save"><span class="tn-icon">&#128190;</span> Guardar / Recuperar</button>
+        <button type="button" data-tut="excel"><span class="tn-icon">&#128203;</span> Pegar en tu Excel</button>
+        <button type="button" data-tut="export"><span class="tn-icon">&#128228;</span> Descargar / PDF</button>
+        <button type="button" data-tut="faq"><span class="tn-icon">&#10067;</span> Preguntas</button>
+      </nav>
+
+      <div class="tut-content">
+        <section class="tut-section active" data-tut="intro">
+          <h4>Para qué sirve esto</h4>
+          <p>Esta herramienta te monta un <b>presupuesto</b> de Milwaukee sin pelearte con Excel.
+             Metes los productos (por foto, por CSV del programa, o buscándolos a mano),
+             ajustas cantidades y regalos, y te lo llevas a tu Excel de ventas o a un PDF listo para el cliente.</p>
+          <h5>Lo básico en 30 segundos</h5>
+          <ol>
+            <li><span class="step-num">1</span> Rellena los datos del cliente arriba (nombre, dirección, teléfono…).</li>
+            <li><span class="step-num">2</span> Añade productos por los tres modos de la sección <b>Añadir productos</b>.</li>
+            <li><span class="step-num">3</span> Revisa la tabla y ajusta cantidades, regalos o precios si hace falta.</li>
+            <li><span class="step-num">4</span> Usa los botones debajo de la tabla: <b>Guardar borrador</b>, <b>Pegar en el Excel Base</b>, <b>Descargar Excel</b> o <b>PDF / Imprimir</b>.</li>
+          </ol>
+          <div class="tip"><b>No necesitas internet</b> una vez cargada la página: puedes cerrar la pestaña, volver, y el trabajo sigue ahí. Todo se queda en <i>tu</i> navegador, no se sube a ningún sitio.</div>
+        </section>
+
+        <section class="tut-section" data-tut="add">
+          <h4>Tres maneras de añadir productos</h4>
+
+          <h5><span class="step-num">1</span> Desde una foto</h5>
+          <p>Si el cliente te ha apuntado los productos en un papel o tienes el ticket:</p>
+          <ul>
+            <li>Haz una foto (o arrastra una imagen) y la herramienta intenta leer las referencias automáticamente.</li>
+            <li>Te enseña lo que ha reconocido para que lo <b>revises antes</b> de añadirlo.</li>
+          </ul>
+          <div class="warn"><b>Si la foto sale borrosa o la letra es manuscrita</b> el reconocimiento puede fallar. En ese caso pásasela a una IA (ChatGPT, Gemini, etc.) y pídele las referencias, o usa el modo buscar.</div>
+
+          <h5><span class="step-num">2</span> Desde el CSV del programa</h5>
+          <p>Si te descargas un CSV (o Excel guardado como CSV) con referencias y cantidades:</p>
+          <ul>
+            <li>Arrastra el archivo a la zona &laquo;Desde el CSV del programa&raquo;.</li>
+            <li>La herramienta busca cada referencia en el catálogo Milwaukee y las mete en la tabla.</li>
+          </ul>
+
+          <h5><span class="step-num">3</span> Escribir o buscar</h5>
+          <p>Es el modo más rápido si ya sabes qué vendiste:</p>
+          <ul>
+            <li>En el buscador escribe la <b>referencia</b> (por ejemplo <code>M18FPD3</code>) o parte de la <b>descripción</b> (por ejemplo <code>taladro percutor</code>).</li>
+            <li>Clica el resultado para añadirlo con cantidad 1. Si lo vuelves a clicar, suma 1.</li>
+            <li>También puedes usar el buscador &laquo;+ Añadir línea&raquo; que hay al final de la tabla para añadir sobre la marcha sin subir arriba del todo.</li>
+          </ul>
+          <div class="tip">Los tres modos <b>se pueden combinar</b>. Añade unas por foto, otras por CSV, y remata buscando a mano. Si repites referencia, la cantidad se suma sola.</div>
+        </section>
+
+        <section class="tut-section" data-tut="adjust">
+          <h4>Ajustar la tabla</h4>
+          <p>Cada fila de la tabla tiene:</p>
+          <ul>
+            <li><b>Cantidad</b>: edítala a mano en la casilla.</li>
+            <li><b>Regalo</b>: marca la casilla si esa unidad se regala. Se descuenta del total (fila &laquo;Descuento por regalos&raquo;).</li>
+            <li><b>Precio unitario (PVP)</b>: si has pactado un precio distinto <i>solo en esa línea</i>, edítalo en la casilla. El total se recalcula al momento.</li>
+            <li><b>Eliminar</b>: la papelera borra la línea.</li>
+          </ul>
+          <h5>Totales</h5>
+          <p>Debajo de la tabla ves: Subtotal, Descuento por regalos, Descuento comercial (si lo hay), Base imponible, IVA (editable arriba, por defecto 21%) y <b>Total</b>.</p>
+          <div class="tip">¿Descuento global sobre todo el presupuesto? Mira la pestaña <b>&laquo;Descuento comercial&raquo;</b>, hay una casilla dedicada para eso.</div>
+          <div class="warn">Si tocas un PVP y te arrepientes, borra el valor y escribe el original. No hay botón de deshacer por línea.</div>
+        </section>
+
+        <section class="tut-section" data-tut="discount">
+          <h4>Descuento comercial sobre el total</h4>
+          <p>Si el jefe te autoriza un descuento global (por ejemplo dejar el total en 800&nbsp;&euro; en lugar de 1.000&nbsp;&euro;), <b>no hace falta</b> que cambies el PVP de cada línea a mano. Tienes una casilla dedicada.</p>
+          <h5>Cómo se usa</h5>
+          <ol>
+            <li><span class="step-num">1</span> Baja hasta la caja de totales (debajo de la tabla, a la derecha).</li>
+            <li><span class="step-num">2</span> Debajo del IVA tienes la casilla &laquo;<b>Aplicar descuento sobre el total</b>&raquo;.</li>
+            <li><span class="step-num">3</span> Escribe el valor y elige <b>%</b> (porcentaje) o <b>&euro;</b> (importe fijo).</li>
+            <li><span class="step-num">4</span> El descuento se resta del total con IVA. La fila &laquo;Descuento comercial&raquo; se pone en dorado para que veas que está aplicado y el TOTAL se actualiza solo.</li>
+          </ol>
+          <div class="tip">El descuento aplica <b>sobre el total con IVA</b>, no sobre la base. Ejemplo: total con IVA 1.000&nbsp;&euro;, quieres dejarlo en 800&nbsp;&euro;. Pon <code>20</code> con <b>%</b>, o <code>200</code> con <b>&euro;</b>.</div>
+          <h5>Dónde aparece el descuento</h5>
+          <ul>
+            <li><b>En el PDF que mandas al cliente</b>: s&iacute;, aparece la fila &laquo;Descuento comercial&raquo; justo antes del TOTAL para que el cliente vea el favor.</li>
+            <li><b>En el Excel descargado del presupuesto</b>: s&iacute;, con una fila espec&iacute;fica.</li>
+            <li><b>En el Excel Base de ventas</b>: <u>no</u>. El Excel Base recibe siempre el PVP de cat&aacute;logo tal cual. El descuento comercial es un acuerdo comercial, no toca el dato base.</li>
+          </ul>
+          <div class="warn">Si pones un descuento mayor que el total, se recorta al máximo (no deja total negativo).</div>
+        </section>
+
+        <section class="tut-section" data-tut="save">
+          <h4>Guardar borrador y recuperar trabajo</h4>
+          <p>Hay dos sistemas que se ocupan de que no pierdas nada de lo que estás haciendo:</p>
+
+          <h5><span class="step-num">1</span> Guardar borrador (manual)</h5>
+          <p>El botón <b>Guardar borrador</b> aparca el presupuesto con nombre para recuperarlo cuando quieras.</p>
+          <ul>
+            <li>Te propone el nombre <code>Presupuesto [Cliente]</code>, pero puedes cambiarlo.</li>
+            <li>Para abrir uno guardado, clica <b>Mis borradores</b> y elige el que quieras.</li>
+            <li>Desde ahí también puedes borrar los que ya no necesites (icono papelera).</li>
+            <li>Los borradores viven en <b>este navegador</b>. Si usas otro ordenador, no los ves allí.</li>
+          </ul>
+
+          <h5><span class="step-num">2</span> Autoguardado (automático)</h5>
+          <p>La herramienta guarda sola cada pocos segundos lo que tengas a medias. No hace falta que pulses nada.</p>
+          <ul>
+            <li>Si se te cierra la pestaña o el navegador por accidente, al volver a abrir la página aparece un aviso arriba para <b>Recuperar</b> o <b>Descartar</b> el último trabajo.</li>
+            <li>Verás el indicador verde &laquo;&check; guardado autom&aacute;ticamente&raquo; cada vez que se guarda.</li>
+          </ul>
+
+          <h5><span class="step-num">3</span> Empezar de nuevo sin perder nada</h5>
+          <p>Cuando pulsas <b>Empezar de nuevo</b> te aparece un aviso con las dos opciones claras:</p>
+          <ul>
+            <li>Si ya has <b>guardado el borrador</b>: tranquilo, lo tienes en &laquo;Mis borradores&raquo; y no se pierde nada. Dale a OK.</li>
+            <li>Si <b>no</b> lo has guardado: perderás las líneas actuales. Guarda borrador antes si no quieres perderlo.</li>
+          </ul>
+          <div class="warn">Esto no es una nube. Si limpias el historial o los datos del navegador, se borran también los borradores y el autoguardado. Para una copia &laquo;de verdad&raquo;, descarga el Excel o el PDF.</div>
+        </section>
+
+        <section class="tut-section" data-tut="excel">
+          <h4>Pegar en tu Excel de ventas (el &laquo;Base&raquo;)</h4>
+          <p>Este es el paso que te ahorra más tiempo. Pega el presupuesto entero en tu Excel base con dos clics.</p>
+          <ol>
+            <li><span class="step-num">1</span> Clica <b>Pegar en el Excel Base</b>.</li>
+            <li><span class="step-num">2</span> Abre tu Excel de ventas.</li>
+            <li><span class="step-num">3</span> Colócate en la primera celda vacía de la columna <b>A</b> (la columna <i>JSS</i>).</li>
+            <li><span class="step-num">4</span> Pega con <kbd>Ctrl</kbd>+<kbd>V</kbd> (en Mac <kbd>Cmd</kbd>+<kbd>V</kbd>). Rellena las 17 columnas de golpe.</li>
+          </ol>
+          <div class="tip">Se pegan <b>valores en limpio</b>, sin fórmulas. Así no mareamos a tu Excel ni se rompe nada. Los precios van con coma decimal (1.234,56) como en Excel en español.</div>
+          <div class="warn"><b>El descuento comercial NO se incluye en el Excel Base</b>. Cada línea se pega con el PVP de catálogo, que es lo que el Excel de ventas espera. El descuento solo aparece en el PDF y en el Excel descargado del presupuesto.</div>
+          <div class="warn">Si te da error al pegar: asegúrate de estar en la fila correcta y de que Excel está en <b>idioma español</b> (el separador decimal debe ser la coma). Si usas Excel en inglés, avisa y lo adaptamos.</div>
+        </section>
+
+        <section class="tut-section" data-tut="export">
+          <h4>Descargar e imprimir el presupuesto</h4>
+          <h5>Excel del presupuesto</h5>
+          <p>El botón <b>Descargar Excel</b> te genera un <code>.xlsx</code> con el presupuesto ya formateado. Se guarda como <code>Presupuesto [Cliente].xlsx</code>. Incluye subtotal, regalos, descuento comercial (si hay), base imponible, IVA y total.</p>
+          <h5>PDF o imprimir</h5>
+          <p>El botón <b>PDF / Imprimir</b> abre el diálogo de impresión del navegador.</p>
+          <ul>
+            <li>Para <b>PDF</b>: en &laquo;Destino&raquo; elige <i>Guardar como PDF</i>.</li>
+            <li>Para <b>papel</b>: elige tu impresora y dale a imprimir.</li>
+            <li>El nombre por defecto es <code>Presupuesto [Cliente]</code>. Edítalo si quieres.</li>
+          </ul>
+          <div class="tip">En el PDF no aparecen botones, ni avisos, ni el buscador. Solo el presupuesto limpio con logo, datos del cliente, tabla y totales. Listo para mandar al cliente.</div>
+        </section>
+
+        <section class="tut-section" data-tut="faq">
+          <h4>Preguntas frecuentes</h4>
+
+          <h5>¿Funciona sin internet?</h5>
+          <p>Sí. Una vez cargada la página, puedes quedarte sin conexión y seguir trabajando. Los productos del catálogo ya están dentro del archivo.</p>
+
+          <h5>¿Mis datos se suben a algún servidor?</h5>
+          <p>No. Todo pasa dentro de tu navegador. Ni los datos del cliente, ni los presupuestos, ni las fotos salen de tu ordenador.</p>
+
+          <h5>¿Puedo usar esto desde el móvil?</h5>
+          <p>Sí. La página está pensada para el móvil también. Si el texto te queda pequeño, usa el zoom del navegador.</p>
+
+          <h5>La foto no reconoce bien las referencias</h5>
+          <p>Pásasela a una IA (ChatGPT, Gemini, etc.) pidiéndole las referencias Milwaukee, o métela a mano con el buscador. El OCR va bien con texto impreso, pero con letra manuscrita o fotos borrosas se le atraganta.</p>
+
+          <h5>No encuentro una referencia buscando</h5>
+          <p>El buscador de arriba muestra hasta 200 resultados. Si llegas al límite, afina con más palabras (marca + tipo de herramienta). Si aun así no sale, la referencia puede estar fuera de catálogo o con un código distinto.</p>
+
+          <h5>Quiero cambiar el comercial o el IVA</h5>
+          <p>El IVA se edita arriba (por defecto 21%). El comercial viene fijo a Antonio Torres. Si hay que cambiarlo para otro usuario, avisa y lo adaptamos.</p>
+
+          <h5>¿Y si tengo una idea para mejorar?</h5>
+          <p>Apúntala y cuéntala. Esto está pensado para crecer: más comerciales, más marcas, o funciones nuevas. Cuanto más feedback, mejor.</p>
+        </section>
       </div>
-
-      <section class="tut-section active" data-tut="intro">
-        <h4>Para qué sirve esto</h4>
-        <p>Esta herramienta te monta un <b>presupuesto</b> de Milwaukee sin pelearte con Excel.
-           Metes los productos (por foto, por CSV del programa, o buscándolos a mano),
-           ajustas cantidades y regalos, y te lo llevas a tu Excel de ventas o a un PDF listo para el cliente.</p>
-        <h5>Lo básico en 30 segundos</h5>
-        <ol>
-          <li><span class="step-num">1</span> Rellena los datos del cliente arriba (nombre, dirección, teléfono…).</li>
-          <li><span class="step-num">2</span> Añade productos por los tres modos de la sección <b>Añadir productos</b>.</li>
-          <li><span class="step-num">3</span> Revisa la tabla y ajusta cantidades, regalos o precios si hace falta.</li>
-          <li><span class="step-num">4</span> Usa los botones de la derecha: <b>Guardar borrador</b>, <b>Copiar para Excel Base</b>, <b>Descargar Excel</b> o <b>PDF / Imprimir</b>.</li>
-        </ol>
-        <div class="tip"><b>No necesitas internet</b> una vez cargada la página: puedes cerrar la pestaña, volver, y el trabajo sigue ahí. Todo se queda en <i>tu</i> navegador, no se sube a ningún sitio.</div>
-      </section>
-
-      <section class="tut-section" data-tut="add">
-        <h4>Tres maneras de añadir productos</h4>
-
-        <h5><span class="step-num">1</span> Desde una foto</h5>
-        <p>Si el cliente te ha apuntado los productos en un papel o tienes el ticket:</p>
-        <ul>
-          <li>Haz una foto (o arrastra una imagen) y la herramienta intenta leer las referencias automáticamente.</li>
-          <li>Te enseña lo que ha reconocido para que lo <b>revises antes</b> de añadirlo.</li>
-        </ul>
-        <div class="warn"><b>Si la foto sale borrosa o la letra es manuscrita</b> el reconocimiento puede fallar. En ese caso pásasela a una IA (ChatGPT, Gemini, etc.) y pídele las referencias, o usa el modo buscar.</div>
-
-        <h5><span class="step-num">2</span> Desde el CSV del programa</h5>
-        <p>Si te descargas un CSV (o Excel guardado como CSV) con referencias y cantidades:</p>
-        <ul>
-          <li>Arrastra el archivo a la zona &laquo;Desde el CSV del programa&raquo;.</li>
-          <li>La herramienta busca cada referencia en el catálogo Milwaukee y las mete en la tabla.</li>
-        </ul>
-
-        <h5><span class="step-num">3</span> Escribir o buscar</h5>
-        <p>Es el modo más rápido si ya sabes qué vendiste:</p>
-        <ul>
-          <li>En el buscador escribe la <b>referencia</b> (por ejemplo <code>M18FPD3</code>) o parte de la <b>descripción</b> (por ejemplo <code>taladro percutor</code>).</li>
-          <li>Clica el resultado para añadirlo con cantidad 1. Si lo vuelves a clicar, suma 1.</li>
-          <li>También puedes usar el buscador &laquo;+ Añadir línea&raquo; que hay al final de la tabla para añadir sobre la marcha sin subir a lo de arriba.</li>
-        </ul>
-        <div class="tip">Los tres modos <b>se pueden combinar</b>. Añade unas por foto, otras por CSV, y remata buscando a mano. Si repites referencia, la cantidad se suma sola.</div>
-      </section>
-
-      <section class="tut-section" data-tut="adjust">
-        <h4>Ajustar la tabla</h4>
-        <p>Cada fila de la tabla tiene:</p>
-        <ul>
-          <li><b>Cantidad</b>: edítala a mano.</li>
-          <li><b>Regalo</b>: marca la casilla si esa unidad se regala. Se descuenta del total (ver fila &laquo;Descuento por regalos&raquo;).</li>
-          <li><b>Precio unitario (PVP)</b>: si has pactado un precio distinto <i>solo en esa línea</i>, edítalo en la casilla. El total se recalcula al momento.</li>
-          <li><b>Eliminar</b>: la papelera borra la línea.</li>
-        </ul>
-
-        <h5>Descuento comercial (sobre el total)</h5>
-        <p>Si tu jefe te autoriza un descuento global (por ejemplo de 1.000&nbsp;&euro; a 800&nbsp;&euro;), <b>no hace falta</b> que cambies el PVP de cada línea a mano. Usa la fila <b>Descuento comercial</b> que tienes en los totales:</p>
-        <ol>
-          <li><span class="step-num">1</span> Escribe el valor del descuento en la casilla.</li>
-          <li><span class="step-num">2</span> Elige <b>%</b> (porcentaje sobre el subtotal) o <b>&euro;</b> (importe fijo a restar).</li>
-          <li><span class="step-num">3</span> La base imponible, el IVA y el TOTAL se recalculan solos.</li>
-        </ol>
-        <div class="tip">Ejemplo: subtotal 1.000 &euro;, quieres dejarlo en 800 &euro;. Pon <code>20</code> con <b>%</b> seleccionado, o <code>200</code> con <b>&euro;</b>. Sale lo mismo.</div>
-        <p>El descuento aparece también en el <b>PDF del cliente</b> (con la fila &laquo;Descuento comercial&raquo; visible sobre la base imponible) y, al <b>copiar al Excel Base</b>, se reparte proporcionalmente entre las líneas para que el precio unitario que queda en Excel sea el real que has cobrado.</p>
-
-        <h5>Totales</h5>
-        <p>Debajo de la tabla ves: Subtotal, Descuento por regalos, Descuento comercial (si lo hay), Base imponible, IVA (editable arriba, por defecto 21%) y <b>Total</b>.</p>
-        <div class="tip">Si tocas un PVP y te arrepientes, borra el valor y escribe el original. No hay botón de deshacer por línea.</div>
-      </section>
-
-      <section class="tut-section" data-tut="save">
-        <h4>Guardar como borrador</h4>
-        <p>El botón <b>Guardar borrador</b> (carpeta) te deja aparcar el presupuesto con un nombre y recuperarlo después.</p>
-        <ul>
-          <li>Te sugiere el nombre <code>Presupuesto [Cliente]</code> pero puedes cambiarlo.</li>
-          <li>Para abrirlo, usa <b>Mis borradores</b> y clica el que quieras.</li>
-          <li>Los borradores viven en <b>este navegador</b>. Si cambias de ordenador o borras los datos del navegador, se pierden.</li>
-        </ul>
-        <div class="warn">Esto no es una nube. Si quieres guardar una copia &laquo;de verdad&raquo;, descarga el Excel o el PDF.</div>
-      </section>
-
-      <section class="tut-section" data-tut="excel">
-        <h4>Pegar en tu Excel de ventas</h4>
-        <p>Este es el paso que te ahorra más tiempo. Pega el presupuesto entero en tu Excel base con dos clics.</p>
-        <ol>
-          <li><span class="step-num">1</span> Clica <b>Copiar para Excel Base</b>.</li>
-          <li><span class="step-num">2</span> Abre tu Excel de ventas.</li>
-          <li><span class="step-num">3</span> Colócate en la primera celda vacía de la columna <b>A</b> (la columna <i>JSS</i>).</li>
-          <li><span class="step-num">4</span> Pega con <kbd>Ctrl</kbd>+<kbd>V</kbd> (en Mac <kbd>Cmd</kbd>+<kbd>V</kbd>). Rellena las 17 columnas de golpe.</li>
-        </ol>
-        <div class="tip">Se pegan <b>valores en limpio</b>, sin fórmulas. Así no mareamos a tu Excel ni se rompe nada. Los precios van con coma decimal (1.234,56) como en Excel en español.</div>
-        <div class="warn">Si te da error al pegar: asegúrate de estar en la fila correcta y de que Excel está en <b>idioma español</b> (el separador decimal debe ser la coma). Si usas Excel en inglés, avísame y lo adaptamos.</div>
-      </section>
-
-      <section class="tut-section" data-tut="export">
-        <h4>Descargar e imprimir</h4>
-        <h5>Excel</h5>
-        <p>El botón <b>Descargar Excel</b> te genera un <code>.xlsx</code> con el presupuesto ya formateado. Se guarda como <code>Presupuesto [Cliente].xlsx</code>.</p>
-        <h5>PDF o imprimir</h5>
-        <p>El botón <b>PDF / Imprimir</b> abre el diálogo de impresión del navegador.</p>
-        <ul>
-          <li>Para <b>PDF</b>: en &laquo;Destino&raquo; elige <i>Guardar como PDF</i>.</li>
-          <li>Para <b>papel</b>: elige tu impresora y dale a imprimir.</li>
-          <li>El nombre por defecto es <code>Presupuesto [Cliente]</code>. Edítalo si quieres.</li>
-        </ul>
-        <div class="tip">En el PDF no aparecen botones, ni avisos, ni el buscador. Solo el presupuesto limpio con logo, datos del cliente, tabla y totales. Listo para mandar al cliente.</div>
-      </section>
-
-      <section class="tut-section" data-tut="recover">
-        <h4>Recuperar trabajo perdido</h4>
-        <p>La herramienta guarda automáticamente lo que tienes a medias cada pocos segundos en este navegador.</p>
-        <ul>
-          <li>Si se te cierra la pestaña por accidente, al volver a abrir la página te pregunta si quieres <b>recuperar</b> el último presupuesto.</li>
-          <li>Si le dices que no, se descarta.</li>
-          <li>Si quieres empezar de cero sin perder nada, <b>guarda borrador</b> primero y luego pulsa <b>Nuevo presupuesto</b>.</li>
-        </ul>
-        <div class="warn">Si limpias el historial / datos del navegador, se borran también los borradores y el autoguardado.</div>
-      </section>
-
-      <section class="tut-section" data-tut="faq">
-        <h4>Preguntas frecuentes</h4>
-
-        <h5>¿Funciona sin internet?</h5>
-        <p>Sí. Una vez cargada la página, puedes quedarte sin conexión y seguir trabajando. Los productos del catálogo ya están dentro del archivo.</p>
-
-        <h5>¿Mis datos se suben a algún servidor?</h5>
-        <p>No. Todo pasa dentro de tu navegador. Ni los datos del cliente, ni los presupuestos, ni las fotos salen de tu ordenador.</p>
-
-        <h5>¿Puedo usar esto desde el móvil?</h5>
-        <p>Sí. La página está pensada para el móvil también. Si el texto te queda pequeño, usa el zoom del navegador.</p>
-
-        <h5>La foto no reconoce bien las referencias</h5>
-        <p>Pásasela a una IA (ChatGPT, Gemini, etc.) pidiéndole las referencias Milwaukee, o métela a mano con el buscador. El OCR va bien con texto impreso, pero con letra manuscrita o fotos borrosas se le atraganta.</p>
-
-        <h5>No encuentro una referencia buscando</h5>
-        <p>El buscador de arriba muestra hasta 200 resultados. Si llegas al límite, afina con más palabras (marca + tipo de herramienta). Si aun así no sale, la referencia puede estar fuera de catálogo o con un código distinto.</p>
-
-        <h5>Quiero cambiar el comercial o el IVA</h5>
-        <p>El IVA se edita arriba (por defecto 21%). El comercial viene fijo a Antonio Torres. Si hay que cambiarlo para otro usuario, avisa y lo adaptamos.</p>
-
-        <h5>¿Y si tengo una idea para mejorar?</h5>
-        <p>Apúntala y cuéntala. Esto está pensado para crecer: más comerciales, más marcas, o funciones nuevas. Cuanto más feedback, mejor.</p>
-      </section>
     </div>
   </div>
 </div>
@@ -920,32 +944,34 @@ function renderBudget() {
   document.getElementById('rowCount').innerHTML = `${lines.length} líneas` + (nf ? ` · <span style="color:#c00">${nf} referencia(s) no encontradas en el catálogo</span>` : '');
 }
 
-// Compute the commercial discount as a € amount, given the current "after gift" base.
-// The user picks either a % of that base, or a fixed € amount. The result is
-// clamped so the discount can never be larger than the amount discountable.
-function computeDiscount(afterGiftBase) {
+// Compute the commercial discount as a € amount, given a reference total.
+// The user picks either a % of that reference, or a fixed € amount. The result
+// is clamped so the discount can never be larger than the reference itself.
+// NOTE: the reference is now the total WITH IVA — the discount applies at the
+// end, on the final total (not on the taxable base).
+function computeDiscount(reference) {
   const val = parseFloat(document.getElementById('fDiscVal').value) || 0;
   const type = document.getElementById('fDiscType').value || 'pct';
-  if (val <= 0 || afterGiftBase <= 0) return 0;
-  let d = type === 'pct' ? afterGiftBase * (val / 100) : val;
-  if (d > afterGiftBase) d = afterGiftBase;
+  if (val <= 0 || reference <= 0) return 0;
+  let d = type === 'pct' ? reference * (val / 100) : val;
+  if (d > reference) d = reference;
   return Math.round(d * 100) / 100;
 }
 
 function updateTotals() {
   const sub = lines.reduce((s, l) => s + l.qty * (l.pvp || 0), 0);
   const gift = lines.filter(l => l.gift).reduce((s, l) => s + l.qty * (l.pvp || 0), 0);
-  const afterGift = sub - gift;
-  const disc = computeDiscount(afterGift);
-  const base = afterGift - disc;
+  const base = sub - gift;
   const iva = base * (parseFloat(document.getElementById('fIva').value) || 0) / 100;
-  const total = base + iva;
+  const totalConIva = base + iva;
+  const disc = computeDiscount(totalConIva);
+  const total = totalConIva - disc;
   document.getElementById('tSub').textContent = fmt(sub);
   document.getElementById('tGift').textContent = '-' + fmt(gift);
-  document.getElementById('tDisc').textContent = (disc > 0 ? '-' : '') + fmt(disc);
-  document.getElementById('rDisc').classList.toggle('has-discount', disc > 0);
   document.getElementById('tBase').textContent = fmt(base);
   document.getElementById('tIva').textContent = fmt(iva);
+  document.getElementById('tDisc').textContent = (disc > 0 ? '-' : '') + fmt(disc);
+  document.getElementById('rDisc').classList.toggle('has-discount', disc > 0);
   document.getElementById('tTotal').textContent = fmt(total);
 }
 document.getElementById('fIva').addEventListener('input', updateTotals);
@@ -1303,20 +1329,12 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
   const tsvClean = (s) => String(s == null ? '' : s).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
   const esNum = (n) => (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).replace('.', ',');
 
-  // If there's a commercial discount, prorate it across the non-gift lines so each
-  // line's "Importe total venta" (col O) already reflects the actual price charged.
-  // This keeps the Excel Base consistent with what the customer pays — no discount
-  // column needed in the base file.
-  const giftFlag = (l) => !!l.gift;
-  const lineFull = (l) => giftFlag(l) ? 0 : (Number(l.qty) || 0) * (Number(l.pvp) || 0);
-  const sub = lines.reduce((s, l) => s + lineFull(l), 0);
-  const disc = computeDiscount(sub); // sub here = afterGift, because gift lines already yield 0
-  const discFactor = sub > 0 ? (sub - disc) / sub : 1; // e.g. 0.80 when discount is 20%
-
+  // Note: el descuento comercial NO se refleja en el Excel Base. El Excel de ventas
+  // recibe siempre el PVP de catálogo tal cual. El descuento solo aparece en el
+  // presupuesto que ve el cliente (PDF / Excel descargado).
   const rows = lines.map((l) => {
-    const gift = giftFlag(l);
-    const basePrice = gift ? 0 : (Number(l.pvp) || 0);
-    const price = Math.round(basePrice * discFactor * 100) / 100;
+    const gift = !!l.gift;
+    const price = gift ? 0 : (Number(l.pvp) || 0);
     const total = gift ? 0 : ((Number(l.qty) || 0) * price);
     return [
       fComercial,           // A JSS
@@ -1326,7 +1344,7 @@ document.getElementById('btnCopyBase').addEventListener('click', () => {
       tsvClean(l.desc),     // E Descripción (valor del catálogo)
       tsvClean(l.gama),     // F Marca (valor del catálogo)
       l.qty,                // G Cantidad
-      esNum(price),         // H Precio unitario (valor, ya con descuento prorrateado)
+      esNum(price),         // H Precio unitario (PVP de catálogo)
       fCliente,             // I Usuario
       fContacto,            // J Contacto
       '',                   // K A través de quien (manual)
@@ -1377,22 +1395,20 @@ document.getElementById('btnExcel').addEventListener('click', () => {
     if (l.gift) gift += l.qty * (l.pvp || 0);
     data.push([l.ref, l.desc, l.gama, l.qty, l.pvp || 0, l.gift ? 'SÍ' : '', t]);
   });
-  const afterGift = sub - gift;
-  const disc = computeDiscount(afterGift);
-  const base = afterGift - disc;
+  const base = sub - gift;
   const iva = base * ivaPct / 100;
+  const totalConIva = base + iva;
+  const disc = computeDiscount(totalConIva);
   const discType = document.getElementById('fDiscType').value || 'pct';
   const discRaw = parseFloat(document.getElementById('fDiscVal').value) || 0;
-  const discLabel = disc > 0
-    ? (discType === 'pct' ? `Dto. comercial (${discRaw}%)` : 'Dto. comercial')
-    : 'Dto. comercial';
+  const discLabel = disc > 0 && discType === 'pct' ? `Dto. comercial (${discRaw}%)` : 'Dto. comercial';
   data.push([]);
   data.push(['', '', '', '', '', 'Subtotal', sub]);
   data.push(['', '', '', '', '', 'Dto. regalos', -gift]);
-  if (disc > 0) data.push(['', '', '', '', '', discLabel, -disc]);
   data.push(['', '', '', '', '', 'Base imp.', base]);
   data.push(['', '', '', '', '', `IVA ${ivaPct}%`, iva]);
-  data.push(['', '', '', '', '', 'TOTAL', base + iva]);
+  if (disc > 0) data.push(['', '', '', '', '', discLabel, -disc]);
+  data.push(['', '', '', '', '', 'TOTAL', totalConIva - disc]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
   ws['!cols'] = [{wch: 14}, {wch: 40}, {wch: 10}, {wch: 10}, {wch: 12}, {wch: 10}, {wch: 14}];
@@ -1682,9 +1698,9 @@ const tutSections = tutorialModal.querySelectorAll('.tut-section');
 function showTutSection(key) {
   tutNavBtns.forEach(b => b.classList.toggle('active', b.dataset.tut === key));
   tutSections.forEach(s => s.classList.toggle('active', s.dataset.tut === key));
-  // reset scroll to top of body when changing tab
-  const body = tutorialModal.querySelector('.modal-body');
-  if (body) body.scrollTop = 0;
+  // reset scroll to top of content column when changing tab
+  const content = tutorialModal.querySelector('.tut-content');
+  if (content) content.scrollTop = 0;
 }
 tutNavBtns.forEach(b => b.addEventListener('click', () => showTutSection(b.dataset.tut)));
 document.getElementById('helpFab').addEventListener('click', () => {
