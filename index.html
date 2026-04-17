@@ -1697,13 +1697,25 @@ function renderDraftsInline() {
   const section = document.getElementById('savedDraftsStep');
   if (!body || !section) return;
   const drafts = listDrafts();
+  // Controls that only make sense when there are drafts to act on.
+  const selWrap  = document.getElementById('draftSelectAll');
+  const btnCopy  = document.getElementById('btnCopyBaseSelected');
+  const btnExp   = document.getElementById('btnExportDrafts');
+  const countEl  = document.getElementById('draftSelectedCount');
+  const selLabel = selWrap ? selWrap.closest('label') : null;
+  const showBulk = drafts.length > 0;
+  if (selLabel) selLabel.style.display = showBulk ? '' : 'none';
+  if (btnCopy)  btnCopy.style.display  = showBulk ? '' : 'none';
+  if (btnExp)   btnExp.style.display   = showBulk ? '' : 'none';
+  if (countEl)  countEl.style.display  = showBulk ? '' : 'none';
+  // Section is always visible so Import is always reachable, even on a
+  // fresh device where someone else just shared a .json.
+  section.style.display = 'block';
   if (!drafts.length) {
-    section.style.display = 'none';
-    body.innerHTML = '';
+    body.innerHTML = '<p style="text-align:center; color:#888; padding:18px 10px; border:1px dashed #ddd; border-radius:6px;">No tienes presupuestos guardados todavía.<br>Si alguien te ha pasado un archivo <code>.json</code>, pulsa <b>Importar</b> arriba a la derecha.</p>';
     updateDraftSelectionState();
     return;
   }
-  section.style.display = 'block';
   body.innerHTML = drafts.map(d => {
     const total = (d.lines || []).reduce((s,l) => s + (l.gift?0:(l.qty||0)*(l.pvp||0)), 0);
     const cliente = (d.client && d.client.cliente) || '(sin cliente)';
